@@ -195,15 +195,15 @@ const Dashboard = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {isClient ? (
             <>
-              <QuickActionCard icon={Home} label="Explorer" color="green" />
+              <QuickActionCard icon={Home} label="Explorer" color="green" onClick={() => navigate('/catalog')} />
               <QuickActionCard icon={Heart} label="Favoris" color="orange" />
               <QuickActionCard icon={MessageCircle} label="Messages" color="blue" />
               <QuickActionCard icon={Settings} label="Paramètres" color="muted" />
             </>
           ) : (
             <>
-              <QuickActionCard icon={Plus} label="Nouveau produit" color="green" />
-              <QuickActionCard icon={ShoppingBag} label="Catalogue" color="orange" />
+              <QuickActionCard icon={Plus} label="Nouveau produit" color="green" onClick={() => navigate('/my-products')} />
+              <QuickActionCard icon={ShoppingBag} label="Catalogue" color="orange" onClick={() => navigate('/my-products')} />
               <QuickActionCard icon={MessageCircle} label="Messages" color="blue" />
               <QuickActionCard icon={Settings} label="Paramètres" color="muted" />
             </>
@@ -253,7 +253,7 @@ const Dashboard = () => {
   );
 };
 
-const QuickActionCard = ({ icon: Icon, label, color }: { icon: any; label: string; color: string }) => {
+const QuickActionCard = ({ icon: Icon, label, color, onClick }: { icon: any; label: string; color: string; onClick?: () => void }) => {
   const colorClasses: Record<string, string> = {
     green: "bg-afrimart-green/10 text-afrimart-green hover:bg-afrimart-green/20",
     orange: "bg-afrimart-orange/10 text-afrimart-orange hover:bg-afrimart-orange/20",
@@ -262,7 +262,7 @@ const QuickActionCard = ({ icon: Icon, label, color }: { icon: any; label: strin
   };
 
   return (
-    <button className={`p-4 rounded-2xl flex flex-col items-center gap-2 transition-colors ${colorClasses[color]}`}>
+    <button onClick={onClick} className={`p-4 rounded-2xl flex flex-col items-center gap-2 transition-colors ${colorClasses[color]}`}>
       <Icon className="w-6 h-6" />
       <span className="text-sm font-medium">{label}</span>
     </button>
