@@ -10,6 +10,9 @@ import Catalog from "./pages/Catalog";
 import MyProducts from "./pages/MyProducts";
 import NotFound from "./pages/NotFound";
 import BusinessRoute from "./components/auth/BusinessRoute";
+import BusinessPublicProfile from "./pages/BusinessPublicProfile";
+import Messages from "./pages/Messages";
+import Chat from "./pages/Chat";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +27,9 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/catalog" element={<Catalog />} />
+          <Route path="/business/:businessId" element={<BusinessPublicProfile />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/chat/:conversationId" element={<Chat />} />
           <Route 
             path="/my-products" 
             element={
