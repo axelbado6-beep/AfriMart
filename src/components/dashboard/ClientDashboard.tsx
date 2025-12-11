@@ -61,6 +61,7 @@ const ClientDashboard = ({ profile, userEmail }: ClientDashboardProps) => {
           icon={MessageCircle} 
           label="Messages" 
           color="blue" 
+          onClick={() => navigate('/messages')}
         />
         <QuickActionCard 
           icon={Settings} 

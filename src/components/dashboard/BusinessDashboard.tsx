@@ -76,6 +76,7 @@ const BusinessDashboard = ({ profile, businessProfile, userEmail }: BusinessDash
           icon={MessageCircle} 
           label="Messages" 
           color="blue" 
+          onClick={() => navigate('/messages')}
         />
         <QuickActionCard 
           icon={Settings} 
