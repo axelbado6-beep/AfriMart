@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { User, Building2, ShoppingBag, Users, Sparkles, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Session } from "@supabase/supabase-js";
+import afrimartLogo from "@/assets/afrimart-logo.jpg";
 
 const Index = () => {
   const [session, setSession] = useState<Session | null>(null);
@@ -30,9 +31,11 @@ const Index = () => {
       <header className="relative z-10 p-6">
         <nav className="container mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-afrimart-green to-afrimart-orange flex items-center justify-center">
-              <ShoppingBag className="w-6 h-6 text-primary-foreground" />
-            </div>
+            <img 
+              src={afrimartLogo} 
+              alt="AfriMart Logo" 
+              className="w-12 h-12 rounded-full object-cover"
+            />
             <span className="text-2xl font-display font-bold text-primary-foreground">
               Afri<span className="text-gradient">Mart</span>
             </span>
@@ -59,6 +62,15 @@ const Index = () => {
       {/* Hero Section */}
       <main className="relative z-10 container mx-auto px-6 pt-12 pb-24">
         <div className="text-center mb-16 animate-fade-up">
+          {/* Logo centered */}
+          <div className="mb-8">
+            <img 
+              src={afrimartLogo} 
+              alt="AfriMart" 
+              className="w-32 h-32 mx-auto rounded-2xl shadow-2xl object-cover"
+            />
+          </div>
+          
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 text-primary-foreground/80 text-sm mb-6 backdrop-blur-sm border border-primary-foreground/10">
             <Sparkles className="w-4 h-4 text-afrimart-orange" />
             <span>La première marketplace africaine avec réseau social</span>
@@ -86,7 +98,6 @@ const Index = () => {
           >
             <div className="absolute inset-0 bg-afrimart-green/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
             <div className="relative bg-card/10 backdrop-blur-md border border-primary-foreground/10 rounded-3xl p-8 md:p-10 transition-all duration-500 hover:border-afrimart-green/50 hover:bg-card/20 overflow-hidden">
-              {/* Decorative Circle */}
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-afrimart-green/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
               
               <div className="relative">
@@ -126,7 +137,6 @@ const Index = () => {
           >
             <div className="absolute inset-0 bg-afrimart-orange/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
             <div className="relative bg-card/10 backdrop-blur-md border border-primary-foreground/10 rounded-3xl p-8 md:p-10 transition-all duration-500 hover:border-afrimart-orange/50 hover:bg-card/20 overflow-hidden">
-              {/* Decorative Circle */}
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-afrimart-orange/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
               
               <div className="relative">

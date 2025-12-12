@@ -18,7 +18,9 @@ interface Product {
   currency: string;
   images: string[];
   category: string | null;
+  business_id: string;
   business_profiles: {
+    id: string;
     business_name: string;
   } | null;
 }
@@ -61,7 +63,9 @@ export default function Catalog() {
           currency,
           images,
           category,
+          business_id,
           business_profiles (
+            id,
             business_name
           )
         `)
@@ -171,7 +175,11 @@ export default function Catalog() {
             products={filteredProducts.map(p => ({
               ...p,
               category: p.category || undefined,
-              business_profiles: p.business_profiles || undefined
+              business_id: p.business_id,
+              business_profiles: p.business_profiles ? {
+                id: p.business_profiles.id,
+                business_name: p.business_profiles.business_name
+              } : undefined
             }))} 
             loading={loading} 
           />
