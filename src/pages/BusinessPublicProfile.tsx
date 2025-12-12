@@ -7,13 +7,12 @@ import {
   MessageCircle, 
   Heart, 
   MapPin, 
-  Clock, 
-  Users,
   CheckCircle,
   Grid3X3,
   Store
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useFavorites } from "@/hooks/useFavorites";
 import type { Tables } from "@/integrations/supabase/types";
 
 type BusinessProfile = Tables<"business_profiles">;
@@ -29,6 +28,8 @@ const BusinessPublicProfile = () => {
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  
+  const { toggleFavorite, isFavorite } = useFavorites(currentUserId);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -60,7 +61,6 @@ const BusinessPublicProfile = () => {
 
       setBusiness(businessData);
 
-      // Fetch products
       const { data: productsData } = await supabase
         .from("products")
         .select("*")
@@ -75,7 +75,7 @@ const BusinessPublicProfile = () => {
     fetchBusiness();
   }, [businessId, navigate, toast]);
 
-  const handleStartChat = async () => {
+  const handleStartChat = async (product?: Product) => {
     if (!currentUserId) {
       toast({
         title: "Connexion requise",
@@ -96,8 +96,14 @@ const BusinessPublicProfile = () => {
       .eq("business_id", business.id)
       .single();
 
+    const productContext = product ? {
+      id: product.id,
+      image: product.images?.[0] || "/placeholder.svg",
+      name: product.name,
+    } : undefined;
+
     if (existingConvo) {
-      navigate(`/chat/${existingConvo.id}`);
+      navigate(`/chat/${existingConvo.id}`, { state: { product: productContext } });
       return;
     }
 
@@ -120,7 +126,7 @@ const BusinessPublicProfile = () => {
       return;
     }
 
-    navigate(`/chat/${newConvo.id}`);
+    navigate(`/chat/${newConvo.id}`, { state: { product: productContext } });
   };
 
   if (loading) {
@@ -147,7 +153,6 @@ const BusinessPublicProfile = () => {
 
       {/* Banner & Profile Info */}
       <div className="relative">
-        {/* Banner */}
         <div 
           className="h-48 md:h-64 bg-gradient-to-br from-primary to-secondary"
           style={business.banner_url ? { 
@@ -157,11 +162,9 @@ const BusinessPublicProfile = () => {
           } : {}}
         />
 
-        {/* Profile Section */}
         <div className="container mx-auto px-4">
           <div className="relative -mt-16 mb-4">
             <div className="flex flex-col md:flex-row md:items-end gap-4">
-              {/* Logo */}
               <div className="w-32 h-32 rounded-2xl bg-card border-4 border-background shadow-lg overflow-hidden flex-shrink-0">
                 {business.logo_url ? (
                   <img 
@@ -176,7 +179,6 @@ const BusinessPublicProfile = () => {
                 )}
               </div>
 
-              {/* Info & Actions */}
               <div className="flex-1 pb-2">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div>
@@ -200,7 +202,7 @@ const BusinessPublicProfile = () => {
                       <Heart className={`w-4 h-4 mr-2 ${isFollowing ? "fill-current" : ""}`} />
                       {isFollowing ? "Abonné" : "S'abonner"}
                     </Button>
-                    <Button className="btn-business" onClick={handleStartChat}>
+                    <Button className="btn-business" onClick={() => handleStartChat()}>
                       <MessageCircle className="w-4 h-4 mr-2" />
                       Contacter
                     </Button>
@@ -254,7 +256,13 @@ const BusinessPublicProfile = () => {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                isFavorite={isFavorite(product.id)}
+                onToggleFavorite={() => toggleFavorite(product.id)}
+                onChatClick={() => handleStartChat(product)}
+              />
             ))}
           </div>
         )}
@@ -263,14 +271,16 @@ const BusinessPublicProfile = () => {
   );
 };
 
-const ProductCard = ({ product }: { product: Product }) => {
-  const navigate = useNavigate();
-  
+interface ProductCardProps {
+  product: Product;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
+  onChatClick: () => void;
+}
+
+const ProductCard = ({ product, isFavorite, onToggleFavorite, onChatClick }: ProductCardProps) => {
   return (
-    <div 
-      className="group cursor-pointer bg-card rounded-xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300"
-      onClick={() => navigate(`/product/${product.id}`)}
-    >
+    <div className="group bg-card rounded-xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300">
       <div className="aspect-square relative overflow-hidden">
         {product.images && product.images.length > 0 ? (
           <img 
@@ -284,12 +294,39 @@ const ProductCard = ({ product }: { product: Product }) => {
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        
+        {/* Favorite button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite();
+          }}
+          className={`absolute top-2 right-2 p-2 rounded-full bg-background/80 backdrop-blur-sm transition-colors ${
+            isFavorite ? "text-red-500" : "text-muted-foreground hover:text-primary"
+          }`}
+        >
+          <Heart className={`w-4 h-4 ${isFavorite ? "fill-current" : ""}`} />
+        </button>
       </div>
+      
       <div className="p-3">
         <h4 className="font-medium truncate">{product.name}</h4>
-        <p className="text-afrimart-orange font-bold">
+        <p className="text-afrimart-orange font-bold mb-2">
           {product.price.toLocaleString()} {product.currency}
         </p>
+        
+        {/* Chat button */}
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            onChatClick();
+          }}
+          className="w-full btn-client gap-2"
+          size="sm"
+        >
+          <MessageCircle className="w-4 h-4" />
+          Contacter
+        </Button>
       </div>
     </div>
   );

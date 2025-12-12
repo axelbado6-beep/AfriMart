@@ -92,6 +92,35 @@ export type Database = {
         }
         Relationships: []
       }
+      favorites: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string
@@ -99,6 +128,9 @@ export type Database = {
           created_at: string
           id: string
           is_read: boolean
+          media_type: string | null
+          media_url: string | null
+          product_id: string | null
           sender_id: string
         }
         Insert: {
@@ -107,6 +139,9 @@ export type Database = {
           created_at?: string
           id?: string
           is_read?: boolean
+          media_type?: string | null
+          media_url?: string | null
+          product_id?: string | null
           sender_id: string
         }
         Update: {
@@ -115,6 +150,9 @@ export type Database = {
           created_at?: string
           id?: string
           is_read?: boolean
+          media_type?: string | null
+          media_url?: string | null
+          product_id?: string | null
           sender_id?: string
         }
         Relationships: [
@@ -123,6 +161,13 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
             referencedColumns: ["id"]
           },
         ]
