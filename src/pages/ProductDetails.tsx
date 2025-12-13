@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import {
@@ -15,7 +16,8 @@ import {
   Minus,
   Plus,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Check
 } from "lucide-react";
 
 interface Product {
@@ -43,12 +45,12 @@ const ProductDetails = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { addToCart, isInCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [userId, setUserId] = useState<string | null>(null);
-  const [ordering, setOrdering] = useState(false);
   
   const { isFavorite, toggleFavorite } = useFavorites(userId);
 
@@ -71,9 +73,9 @@ const ProductDetails = () => {
           )
         `)
         .eq("id", productId)
-        .single();
+        .maybeSingle();
 
-      if (error) {
+      if (error || !data) {
         console.error("Error fetching product:", error);
         navigate("/catalog");
         return;
@@ -99,7 +101,7 @@ const ProductDetails = () => {
       .select("id")
       .eq("client_id", userId)
       .eq("business_id", product.business_id)
-      .single();
+      .maybeSingle();
 
     const productContext = { 
       id: product.id, 
@@ -123,59 +125,23 @@ const ProductDetails = () => {
     }
   };
 
-  const handleOrder = async () => {
-    if (!userId) {
-      navigate("/auth");
-      return;
-    }
-
+  const handleAddToCart = () => {
     if (!product) return;
-
-    setOrdering(true);
     
-    const { error } = await supabase
-      .from("orders")
-      .insert({
-        client_id: userId,
-        business_id: product.business_id,
-        product_id: product.id,
-        quantity,
-        total_price: product.price * quantity,
-        currency: product.currency
-      });
+    addToCart({
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      currency: product.currency,
+      image: product.images?.[0] || "/placeholder.svg",
+      businessId: product.business_id,
+      businessName: product.business_profiles?.business_name || "Vendeur"
+    }, quantity);
 
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de passer la commande",
-        variant: "destructive"
-      });
-    } else {
-      // Create notification for business
-      const { data: businessProfile } = await supabase
-        .from("business_profiles")
-        .select("user_id")
-        .eq("id", product.business_id)
-        .single();
-
-      if (businessProfile) {
-        await supabase.from("notifications").insert({
-          user_id: businessProfile.user_id,
-          type: "new_order",
-          title: "Nouvelle commande",
-          message: `Nouvelle commande pour ${product.name} (x${quantity})`,
-          data: { product_id: product.id, quantity }
-        });
-      }
-
-      toast({
-        title: "Commande passée !",
-        description: "Votre commande a été enregistrée avec succès"
-      });
-      navigate("/orders");
-    }
-    
-    setOrdering(false);
+    toast({
+      title: "Ajouté au panier",
+      description: `${product.name} (x${quantity}) ajouté au panier`
+    });
   };
 
   const nextImage = () => {
@@ -209,6 +175,7 @@ const ProductDetails = () => {
   if (!product) return null;
 
   const images = product.images?.length ? product.images : ["/placeholder.svg"];
+  const inCart = isInCart(product.id);
 
   return (
     <DashboardLayout>
@@ -372,11 +339,19 @@ const ProductDetails = () => {
           </Button>
           <Button
             className="flex-1 btn-client"
-            onClick={handleOrder}
-            disabled={ordering}
+            onClick={handleAddToCart}
           >
-            <ShoppingCart className="w-4 h-4 mr-2" />
-            {ordering ? "..." : "Commander"}
+            {inCart ? (
+              <>
+                <Check className="w-4 h-4 mr-2" />
+                Dans le panier
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="w-4 h-4 mr-2" />
+                Ajouter au panier
+              </>
+            )}
           </Button>
         </div>
 
