@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 import { 
   ShoppingBag, 
   LogOut, 
@@ -46,6 +47,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           </div>
 
           <div className="flex items-center gap-2">
+            <CartDrawer />
             <NotificationBell />
             
             <button 
