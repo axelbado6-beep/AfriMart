@@ -130,15 +130,16 @@ const ClientDashboard = ({ profile, userEmail }: ClientDashboardProps) => {
           onClick={() => document.getElementById('favorites-section')?.scrollIntoView({ behavior: 'smooth' })}
         />
         <QuickActionCard 
-          icon={MessageCircle} 
-          label="Messages" 
+          icon={ShoppingBag} 
+          label="Commandes" 
           color="blue" 
-          onClick={() => navigate('/messages')}
+          onClick={() => navigate('/orders')}
         />
         <QuickActionCard 
-          icon={Settings} 
-          label="Paramètres" 
+          icon={MessageCircle} 
+          label="Messages" 
           color="muted" 
+          onClick={() => navigate('/messages')}
         />
       </div>
 
