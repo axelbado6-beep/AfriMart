@@ -13,6 +13,9 @@ import BusinessRoute from "./components/auth/BusinessRoute";
 import BusinessPublicProfile from "./pages/BusinessPublicProfile";
 import Messages from "./pages/Messages";
 import Chat from "./pages/Chat";
+import ProductDetails from "./pages/ProductDetails";
+import Orders from "./pages/Orders";
+import BusinessOrders from "./pages/BusinessOrders";
 
 const queryClient = new QueryClient();
 
@@ -30,11 +33,21 @@ const App = () => (
           <Route path="/business/:businessId" element={<BusinessPublicProfile />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/chat/:conversationId" element={<Chat />} />
+          <Route path="/product/:productId" element={<ProductDetails />} />
+          <Route path="/orders" element={<Orders />} />
           <Route 
             path="/my-products" 
             element={
               <BusinessRoute>
                 <MyProducts />
+              </BusinessRoute>
+            } 
+          />
+          <Route 
+            path="/business-orders" 
+            element={
+              <BusinessRoute>
+                <BusinessOrders />
               </BusinessRoute>
             } 
           />

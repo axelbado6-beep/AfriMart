@@ -3,14 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { 
   ShoppingBag, 
   LogOut, 
-  Bell, 
   Search,
   Home,
   MessageCircle,
-  User
+  User,
+  Package
 } from "lucide-react";
 
 interface DashboardLayoutProps {
@@ -35,7 +36,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3" onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-afrimart-green to-afrimart-orange flex items-center justify-center">
               <ShoppingBag className="w-5 h-5 text-primary-foreground" />
             </div>
@@ -44,13 +45,13 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             </span>
           </div>
 
-          <div className="flex items-center gap-4">
-            <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-afrimart-orange rounded-full" />
-            </button>
+          <div className="flex items-center gap-2">
+            <NotificationBell />
             
-            <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
+            <button 
+              onClick={() => navigate("/catalog")}
+              className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+            >
               <Search className="w-5 h-5" />
             </button>
 
@@ -75,9 +76,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       {/* Mobile Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 bg-card/80 backdrop-blur-lg border-t border-border md:hidden">
         <div className="flex items-center justify-around py-3">
-          <NavItem icon={Home} label="Accueil" active onClick={() => navigate('/dashboard')} />
+          <NavItem icon={Home} label="Accueil" onClick={() => navigate('/dashboard')} />
           <NavItem icon={Search} label="Explorer" onClick={() => navigate('/catalog')} />
-          <NavItem icon={MessageCircle} label="Messages" />
+          <NavItem icon={Package} label="Commandes" onClick={() => navigate('/orders')} />
+          <NavItem icon={MessageCircle} label="Messages" onClick={() => navigate('/messages')} />
           <NavItem icon={User} label="Profil" />
         </div>
       </nav>
@@ -98,7 +100,7 @@ const NavItem = ({
 }) => (
   <button 
     onClick={onClick}
-    className={`flex flex-col items-center gap-1 px-4 py-1 ${active ? 'text-primary' : 'text-muted-foreground'}`}
+    className={`flex flex-col items-center gap-1 px-3 py-1 ${active ? 'text-primary' : 'text-muted-foreground'}`}
   >
     <Icon className="w-5 h-5" />
     <span className="text-xs">{label}</span>

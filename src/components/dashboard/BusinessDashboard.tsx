@@ -67,21 +67,22 @@ const BusinessDashboard = ({ profile, businessProfile, userEmail }: BusinessDash
           onClick={() => navigate('/my-products')} 
         />
         <QuickActionCard 
+          icon={ShoppingBag} 
+          label="Commandes" 
+          color="orange" 
+          onClick={() => navigate('/business-orders')} 
+        />
+        <QuickActionCard 
           icon={Package} 
           label="Mes produits" 
-          color="orange" 
+          color="blue" 
           onClick={() => navigate('/my-products')} 
         />
         <QuickActionCard 
           icon={MessageCircle} 
           label="Messages" 
-          color="blue" 
-          onClick={() => navigate('/messages')}
-        />
-        <QuickActionCard 
-          icon={Settings} 
-          label="Paramètres" 
           color="muted" 
+          onClick={() => navigate('/messages')}
         />
       </div>
 
