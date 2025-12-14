@@ -9,10 +9,12 @@ import {
   MapPin, 
   CheckCircle,
   Grid3X3,
-  Store
+  Store,
+  ShoppingCart
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useCart } from "@/contexts/CartContext";
 import type { Tables } from "@/integrations/supabase/types";
 
 type BusinessProfile = Tables<"business_profiles">;
@@ -258,7 +260,8 @@ const BusinessPublicProfile = () => {
             {products.map((product) => (
               <ProductCard 
                 key={product.id} 
-                product={product} 
+                product={product}
+                businessName={business.business_name}
                 isFavorite={isFavorite(product.id)}
                 onToggleFavorite={() => toggleFavorite(product.id)}
                 onChatClick={() => handleStartChat(product)}
@@ -273,14 +276,42 @@ const BusinessPublicProfile = () => {
 
 interface ProductCardProps {
   product: Product;
+  businessName: string;
   isFavorite: boolean;
   onToggleFavorite: () => void;
   onChatClick: () => void;
 }
 
-const ProductCard = ({ product, isFavorite, onToggleFavorite, onChatClick }: ProductCardProps) => {
+const ProductCard = ({ product, businessName, isFavorite, onToggleFavorite, onChatClick }: ProductCardProps) => {
+  const navigate = useNavigate();
+  const { addToCart, isInCart } = useCart();
+  const { toast } = useToast();
+  
+  const inCart = isInCart(product.id);
+  const imageUrl = product.images?.[0] || "/placeholder.svg";
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    addToCart({
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      currency: product.currency,
+      image: imageUrl,
+      businessId: product.business_id,
+      businessName: businessName
+    });
+    toast({
+      title: "Ajouté au panier",
+      description: `${product.name} ajouté au panier`
+    });
+  };
+
   return (
-    <div className="group bg-card rounded-xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300">
+    <div 
+      className="group bg-card rounded-xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300 cursor-pointer"
+      onClick={() => navigate(`/product/${product.id}`)}
+    >
       <div className="aspect-square relative overflow-hidden">
         {product.images && product.images.length > 0 ? (
           <img 
@@ -315,18 +346,29 @@ const ProductCard = ({ product, isFavorite, onToggleFavorite, onChatClick }: Pro
           {product.price.toLocaleString()} {product.currency}
         </p>
         
-        {/* Chat button */}
-        <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            onChatClick();
-          }}
-          className="w-full btn-client gap-2"
-          size="sm"
-        >
-          <MessageCircle className="w-4 h-4" />
-          Contacter
-        </Button>
+        {/* Action buttons */}
+        <div className="flex gap-2">
+          <Button
+            onClick={handleAddToCart}
+            variant={inCart ? "secondary" : "outline"}
+            size="sm"
+            className="flex-1 gap-1"
+          >
+            <ShoppingCart className="w-4 h-4" />
+            {inCart ? "Ajouté" : "Panier"}
+          </Button>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              onChatClick();
+            }}
+            className="flex-1 btn-client gap-1"
+            size="sm"
+          >
+            <MessageCircle className="w-4 h-4" />
+            Contacter
+          </Button>
+        </div>
       </div>
     </div>
   );

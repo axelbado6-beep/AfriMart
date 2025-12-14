@@ -2,7 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Heart } from "lucide-react";
+import { MessageCircle, Heart, ShoppingCart } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   id: string;
@@ -34,6 +36,8 @@ export function ProductCard({
   onChatClick,
 }: ProductCardProps) {
   const navigate = useNavigate();
+  const { addToCart, isInCart } = useCart();
+  const { toast } = useToast();
   
   const formatPrice = (price: number, currency: string) => {
     return new Intl.NumberFormat('fr-CI', {
@@ -56,9 +60,28 @@ export function ProductCard({
     onChatClick?.(id, imageUrl, name);
   };
 
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    addToCart({
+      productId: id,
+      name,
+      price,
+      currency,
+      image: imageUrl,
+      businessId: businessId || "",
+      businessName: businessName || "Vendeur"
+    });
+    toast({
+      title: "Ajouté au panier",
+      description: `${name} ajouté au panier`
+    });
+  };
+
   const handleCardClick = () => {
     navigate(`/product/${id}`);
   };
+
+  const inCart = isInCart(id);
 
   return (
     <Card 
@@ -106,13 +129,23 @@ export function ProductCard({
         <p className="text-lg font-bold text-primary">{formatPrice(price, currency)}</p>
       </CardContent>
       {showChatButton && (
-        <CardFooter className="p-4 pt-0">
+        <CardFooter className="p-4 pt-0 flex gap-2">
+          <Button 
+            onClick={handleAddToCart}
+            variant={inCart ? "secondary" : "outline"}
+            size="sm"
+            className="flex-1 gap-1"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            {inCart ? "Ajouté" : "Panier"}
+          </Button>
           <Button 
             onClick={handleChatClick}
-            className="w-full gap-2 btn-client"
+            className="flex-1 gap-1 btn-client"
+            size="sm"
           >
             <MessageCircle className="h-4 w-4" />
-            Contacter le vendeur
+            Contacter
           </Button>
         </CardFooter>
       )}
