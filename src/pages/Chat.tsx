@@ -403,6 +403,30 @@ const Chat = () => {
 };
 
 const MessageBubble = ({ message, isOwn }: { message: Message; isOwn: boolean }) => {
+  const [productDetails, setProductDetails] = useState<{ name: string; image: string; price: number; currency: string } | null>(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (message.product_id) {
+        const { data } = await supabase
+          .from("products")
+          .select("name, images, price, currency")
+          .eq("id", message.product_id)
+          .single();
+        
+        if (data) {
+          setProductDetails({
+            name: data.name,
+            image: data.images?.[0] || "/placeholder.svg",
+            price: data.price,
+            currency: data.currency
+          });
+        }
+      }
+    };
+    fetchProduct();
+  }, [message.product_id]);
+
   return (
     <div className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
       <div
@@ -412,6 +436,28 @@ const MessageBubble = ({ message, isOwn }: { message: Message; isOwn: boolean })
             : "bg-muted text-foreground rounded-bl-md"
         }`}
       >
+        {/* Product reference card */}
+        {message.product_id && productDetails && (
+          <div className="mb-2 p-2 rounded-lg bg-background/20 border border-border/30">
+            <div className="flex gap-2 items-start">
+              <img 
+                src={productDetails.image} 
+                alt={productDetails.name}
+                className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <p className={`text-xs ${isOwn ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                  Produit référencé
+                </p>
+                <p className="font-medium text-sm truncate">{productDetails.name}</p>
+                <p className={`text-sm font-bold ${isOwn ? "" : "text-afrimart-orange"}`}>
+                  {productDetails.price.toLocaleString()} {productDetails.currency}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Media content */}
         {message.media_url && (
           <div className="mb-2">
