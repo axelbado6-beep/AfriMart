@@ -25,6 +25,8 @@ interface BusinessProfile {
   description: string | null;
   is_verified: boolean;
   followers_count: number;
+  location: string | null;
+  phone: string | null;
 }
 
 const Dashboard = () => {

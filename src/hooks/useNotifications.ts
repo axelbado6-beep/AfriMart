@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useNotificationSound } from "./useNotificationSound";
 
 interface Notification {
   id: string;
@@ -14,6 +15,7 @@ interface Notification {
 export const useNotifications = (userId: string | null) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const { playNotificationSound } = useNotificationSound();
 
   useEffect(() => {
     if (!userId) return;
@@ -48,6 +50,9 @@ export const useNotifications = (userId: string | null) => {
           const newNotification = payload.new as Notification;
           setNotifications(prev => [newNotification, ...prev]);
           setUnreadCount(prev => prev + 1);
+          
+          // Play notification sound
+          playNotificationSound();
         }
       )
       .subscribe();
@@ -55,7 +60,7 @@ export const useNotifications = (userId: string | null) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [userId]);
+  }, [userId, playNotificationSound]);
 
   const markAsRead = async (notificationId: string) => {
     await supabase

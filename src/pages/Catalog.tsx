@@ -104,13 +104,13 @@ export default function Catalog() {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background animate-page">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border animate-slide-up">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4 mb-4">
             <Link to="/dashboard">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="hover-scale">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
@@ -122,11 +122,11 @@ export default function Catalog() {
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-4">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="products" className="flex items-center gap-2">
+              <TabsTrigger value="products" className="flex items-center gap-2 transition-all">
                 <ShoppingBag className="w-4 h-4" />
                 Produits
               </TabsTrigger>
-              <TabsTrigger value="businesses" className="flex items-center gap-2">
+              <TabsTrigger value="businesses" className="flex items-center gap-2 transition-all">
                 <Store className="w-4 h-4" />
                 Entreprises
               </TabsTrigger>
@@ -149,15 +149,16 @@ export default function Catalog() {
         {activeTab === "products" && (
           <div className="container mx-auto px-4 pb-4">
             <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-              {categories.map((category) => (
+              {categories.map((category, index) => (
                 <Badge
                   key={category}
                   variant={selectedCategory === category ? "default" : "outline"}
-                  className={`cursor-pointer whitespace-nowrap px-4 py-2 transition-colors ${
+                  className={`cursor-pointer whitespace-nowrap px-4 py-2 transition-all duration-300 animate-appear hover-scale ${
                     selectedCategory === category 
                       ? "bg-primary text-primary-foreground" 
                       : "hover:bg-primary/10"
                   }`}
+                  style={{ animationDelay: `${index * 0.05}s` }}
                   onClick={() => setSelectedCategory(category)}
                 >
                   {category}
@@ -207,11 +208,12 @@ export default function Catalog() {
                 </p>
               </div>
             ) : (
-              filteredBusinesses.map((business) => (
+              filteredBusinesses.map((business, index) => (
                 <BusinessCard 
                   key={business.id} 
                   business={business}
                   onClick={() => navigate(`/business/${business.id}`)}
+                  index={index}
                 />
               ))
             )}
@@ -224,15 +226,18 @@ export default function Catalog() {
 
 const BusinessCard = ({ 
   business, 
-  onClick 
+  onClick,
+  index = 0
 }: { 
   business: BusinessProfile;
   onClick: () => void;
+  index?: number;
 }) => {
   return (
     <button
       onClick={onClick}
-      className="group text-left bg-card rounded-2xl border border-border overflow-hidden hover:shadow-lg transition-all duration-300"
+      className="group text-left bg-card rounded-2xl border border-border overflow-hidden hover:shadow-lg transition-all duration-300 hover-lift animate-appear"
+      style={{ animationDelay: `${index * 0.1}s` }}
     >
       {/* Banner */}
       <div 

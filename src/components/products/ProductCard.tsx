@@ -85,24 +85,24 @@ export function ProductCard({
 
   return (
     <Card 
-      className="group overflow-hidden border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 cursor-pointer"
+      className="group overflow-hidden border-border/50 hover:border-primary/50 transition-all duration-300 hover-lift cursor-pointer animate-scale-in"
       onClick={handleCardClick}
     >
       <div className="relative aspect-square overflow-hidden bg-muted">
         <img 
           src={imageUrl} 
           alt={name}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         <Button
           size="icon"
           variant="ghost"
           onClick={handleFavoriteClick}
-          className={`absolute top-2 right-2 bg-background/80 backdrop-blur-sm hover:bg-background ${
-            isFavorite ? "text-red-500 hover:text-red-600" : "hover:text-primary"
+          className={`absolute top-2 right-2 bg-background/80 backdrop-blur-sm hover:bg-background transition-all ${
+            isFavorite ? "text-red-500 hover:text-red-600 animate-bounce-in" : "hover:text-primary"
           }`}
         >
-          <Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} />
+          <Heart className={`h-4 w-4 transition-all ${isFavorite ? "fill-current animate-pulse-heart" : ""}`} />
         </Button>
         {category && (
           <Badge 
