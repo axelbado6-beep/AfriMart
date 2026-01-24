@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      business_media: {
+        Row: {
+          business_id: string
+          created_at: string
+          description: string | null
+          ended_at: string | null
+          id: string
+          is_live: boolean
+          likes_count: number
+          live_viewers: number
+          media_type: Database["public"]["Enums"]["media_type"]
+          media_url: string
+          product_id: string | null
+          thumbnail_url: string | null
+          title: string | null
+          views_count: number
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          is_live?: boolean
+          likes_count?: number
+          live_viewers?: number
+          media_type: Database["public"]["Enums"]["media_type"]
+          media_url: string
+          product_id?: string | null
+          thumbnail_url?: string | null
+          title?: string | null
+          views_count?: number
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          is_live?: boolean
+          likes_count?: number
+          live_viewers?: number
+          media_type?: Database["public"]["Enums"]["media_type"]
+          media_url?: string
+          product_id?: string | null
+          thumbnail_url?: string | null
+          title?: string | null
+          views_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_media_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_media_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_profiles: {
         Row: {
           banner_url: string | null
@@ -28,6 +94,7 @@ export type Database = {
           location: string | null
           logo_url: string | null
           opening_hours: Json | null
+          phone: string | null
           updated_at: string
           user_id: string
         }
@@ -44,6 +111,7 @@ export type Database = {
           location?: string | null
           logo_url?: string | null
           opening_hours?: Json | null
+          phone?: string | null
           updated_at?: string
           user_id: string
         }
@@ -60,6 +128,7 @@ export type Database = {
           location?: string | null
           logo_url?: string | null
           opening_hours?: Json | null
+          phone?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -351,6 +420,54 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          business_id: string
+          client_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          product_id: string | null
+          rating: number
+          updated_at: string
+        }
+        Insert: {
+          business_id: string
+          client_id: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          product_id?: string | null
+          rating: number
+          updated_at?: string
+        }
+        Update: {
+          business_id?: string
+          client_id?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          product_id?: string | null
+          rating?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -384,6 +501,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      media_type: "photo" | "reel" | "live"
       order_status:
         | "pending"
         | "confirmed"
@@ -520,6 +638,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      media_type: ["photo", "reel", "live"],
       order_status: [
         "pending",
         "confirmed",

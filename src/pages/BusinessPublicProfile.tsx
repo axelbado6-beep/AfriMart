@@ -10,11 +10,13 @@ import {
   CheckCircle,
   Grid3X3,
   Store,
-  ShoppingCart
+  ShoppingCart,
+  Phone
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useCart } from "@/contexts/CartContext";
+import { ReviewSection } from "@/components/reviews/ReviewSection";
 import type { Tables } from "@/integrations/supabase/types";
 
 type BusinessProfile = Tables<"business_profiles">;
@@ -142,11 +144,11 @@ const BusinessPublicProfile = () => {
   if (!business) return null;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background animate-page">
       {/* Header */}
       <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
         <div className="container mx-auto px-4 py-3 flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="hover-scale">
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <h1 className="font-display font-bold truncate">{business.business_name}</h1>
@@ -227,7 +229,7 @@ const BusinessPublicProfile = () => {
           </div>
 
           {/* Description & Details */}
-          <div className="py-4 space-y-3">
+          <div className="py-4 space-y-3 animate-slide-up">
             {business.description && (
               <p className="text-foreground">{business.description}</p>
             )}
@@ -237,6 +239,12 @@ const BusinessPublicProfile = () => {
                   <MapPin className="w-4 h-4" />
                   {business.location}, {business.country}
                 </span>
+              )}
+              {business.phone && (
+                <a href={`tel:${business.phone}`} className="flex items-center gap-1 hover:text-primary transition-colors">
+                  <Phone className="w-4 h-4" />
+                  {business.phone}
+                </a>
               )}
             </div>
           </div>
@@ -257,7 +265,7 @@ const BusinessPublicProfile = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {products.map((product) => (
+            {products.map((product, index) => (
               <ProductCard 
                 key={product.id} 
                 product={product}
@@ -265,10 +273,16 @@ const BusinessPublicProfile = () => {
                 isFavorite={isFavorite(product.id)}
                 onToggleFavorite={() => toggleFavorite(product.id)}
                 onChatClick={() => handleStartChat(product)}
+                index={index}
               />
             ))}
           </div>
         )}
+
+        {/* Reviews Section */}
+        <div className="mt-8">
+          <ReviewSection businessId={business.id} />
+        </div>
       </div>
     </div>
   );
@@ -280,9 +294,10 @@ interface ProductCardProps {
   isFavorite: boolean;
   onToggleFavorite: () => void;
   onChatClick: () => void;
+  index?: number;
 }
 
-const ProductCard = ({ product, businessName, isFavorite, onToggleFavorite, onChatClick }: ProductCardProps) => {
+const ProductCard = ({ product, businessName, isFavorite, onToggleFavorite, onChatClick, index = 0 }: ProductCardProps) => {
   const navigate = useNavigate();
   const { addToCart, isInCart } = useCart();
   const { toast } = useToast();
@@ -309,7 +324,8 @@ const ProductCard = ({ product, businessName, isFavorite, onToggleFavorite, onCh
 
   return (
     <div 
-      className="group bg-card rounded-xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300 cursor-pointer"
+      className="group bg-card rounded-xl overflow-hidden border border-border hover-lift transition-all duration-300 cursor-pointer animate-appear"
+      style={{ animationDelay: `${index * 0.1}s` }}
       onClick={() => navigate(`/product/${product.id}`)}
     >
       <div className="aspect-square relative overflow-hidden">

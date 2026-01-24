@@ -99,10 +99,10 @@ const ClientDashboard = ({ profile, userEmail }: ClientDashboardProps) => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-page">
       {/* Welcome Section */}
-      <div className="flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-afrimart-green/20 flex items-center justify-center">
+      <div className="flex items-center gap-4 animate-slide-up">
+        <div className="w-16 h-16 rounded-full bg-afrimart-green/20 flex items-center justify-center animate-scale-in">
           <ShoppingBag className="w-8 h-8 text-afrimart-green" />
         </div>
         <div>
@@ -121,30 +121,34 @@ const ClientDashboard = ({ profile, userEmail }: ClientDashboardProps) => {
           icon={Store} 
           label="Explorer" 
           color="green" 
-          onClick={() => navigate('/catalog')} 
+          onClick={() => navigate('/catalog')}
+          delay={0}
         />
         <QuickActionCard 
           icon={Heart} 
           label={`Favoris (${favorites.length})`}
           color="orange" 
           onClick={() => document.getElementById('favorites-section')?.scrollIntoView({ behavior: 'smooth' })}
+          delay={1}
         />
         <QuickActionCard 
           icon={ShoppingBag} 
           label="Commandes" 
           color="blue" 
           onClick={() => navigate('/orders')}
+          delay={2}
         />
         <QuickActionCard 
           icon={MessageCircle} 
           label="Messages" 
           color="muted" 
           onClick={() => navigate('/messages')}
+          delay={3}
         />
       </div>
 
       {/* Favorites Section */}
-      <div id="favorites-section" className="bg-card rounded-2xl border border-border p-6">
+      <div id="favorites-section" className="bg-card rounded-2xl border border-border p-6 animate-slide-up stagger-2">
         <div className="flex items-center gap-4 mb-4">
           <div className="w-12 h-12 rounded-full bg-afrimart-orange/10 flex items-center justify-center">
             <Heart className="w-6 h-6 text-afrimart-orange" />
@@ -195,7 +199,7 @@ const ClientDashboard = ({ profile, userEmail }: ClientDashboardProps) => {
       </div>
 
       {/* Search Section */}
-      <div className="bg-card rounded-2xl border border-border p-6">
+      <div className="bg-card rounded-2xl border border-border p-6 animate-slide-up stagger-3">
         <div className="flex items-center gap-4 mb-4">
           <div className="w-12 h-12 rounded-full bg-afrimart-green/10 flex items-center justify-center">
             <Search className="w-6 h-6 text-afrimart-green" />
@@ -210,7 +214,7 @@ const ClientDashboard = ({ profile, userEmail }: ClientDashboardProps) => {
           </div>
         </div>
         <Button 
-          className="btn-client w-full" 
+          className="btn-client w-full hover-scale" 
           onClick={() => navigate('/catalog')}
         >
           <Search className="w-4 h-4 mr-2" />
@@ -225,24 +229,27 @@ const QuickActionCard = ({
   icon: Icon, 
   label, 
   color, 
-  onClick 
+  onClick,
+  delay = 0
 }: { 
   icon: any; 
   label: string; 
   color: string; 
   onClick?: () => void;
+  delay?: number;
 }) => {
   const colorClasses: Record<string, string> = {
-    green: "bg-afrimart-green/10 text-afrimart-green hover:bg-afrimart-green/20",
-    orange: "bg-afrimart-orange/10 text-afrimart-orange hover:bg-afrimart-orange/20",
-    blue: "bg-primary/10 text-primary hover:bg-primary/20",
+    green: "bg-afrimart-green/10 text-afrimart-green hover:bg-afrimart-green/20 hover:shadow-lg hover:shadow-afrimart-green/20",
+    orange: "bg-afrimart-orange/10 text-afrimart-orange hover:bg-afrimart-orange/20 hover:shadow-lg hover:shadow-afrimart-orange/20",
+    blue: "bg-primary/10 text-primary hover:bg-primary/20 hover:shadow-lg hover:shadow-primary/20",
     muted: "bg-muted text-muted-foreground hover:bg-muted/80",
   };
 
   return (
     <button 
       onClick={onClick} 
-      className={`p-4 rounded-2xl flex flex-col items-center gap-2 transition-colors ${colorClasses[color]}`}
+      className={`p-4 rounded-2xl flex flex-col items-center gap-2 transition-all duration-300 hover-scale animate-scale-in ${colorClasses[color]}`}
+      style={{ animationDelay: `${delay * 0.1}s` }}
     >
       <Icon className="w-6 h-6" />
       <span className="text-sm font-medium">{label}</span>
