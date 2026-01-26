@@ -190,7 +190,7 @@ const Chat = () => {
       const filePath = `chat-media/${conversationId}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from("products")
+        .from("chat-media")
         .upload(filePath, selectedMedia);
 
       if (uploadError) {
@@ -204,7 +204,7 @@ const Chat = () => {
       }
 
       const { data: urlData } = supabase.storage
-        .from("products")
+        .from("chat-media")
         .getPublicUrl(filePath);
 
       mediaUrl = urlData.publicUrl;
