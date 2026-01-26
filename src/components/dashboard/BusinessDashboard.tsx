@@ -13,10 +13,7 @@ import {
   Users,
   Eye,
   Phone,
-  MapPin,
-  Video,
-  Camera,
-  BarChart3
+  MapPin
 } from "lucide-react";
 
 interface Profile {
@@ -154,7 +151,7 @@ const BusinessDashboard = ({ profile, businessProfile, userEmail }: BusinessDash
       </div>
 
       {/* Quick Actions - Business specific */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <QuickActionCard 
           icon={Plus} 
           label="Nouveau produit" 
@@ -183,6 +180,13 @@ const BusinessDashboard = ({ profile, businessProfile, userEmail }: BusinessDash
           color="muted" 
           onClick={() => navigate('/messages')}
           delay={3}
+        />
+        <QuickActionCard 
+          icon={Settings} 
+          label="Paramètres" 
+          color="muted" 
+          onClick={() => navigate('/settings')}
+          delay={4}
         />
       </div>
 

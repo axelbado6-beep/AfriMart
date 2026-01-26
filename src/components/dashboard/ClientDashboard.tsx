@@ -116,7 +116,7 @@ const ClientDashboard = ({ profile, userEmail }: ClientDashboardProps) => {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <QuickActionCard 
           icon={Store} 
           label="Explorer" 
@@ -144,6 +144,13 @@ const ClientDashboard = ({ profile, userEmail }: ClientDashboardProps) => {
           color="muted" 
           onClick={() => navigate('/messages')}
           delay={3}
+        />
+        <QuickActionCard 
+          icon={Settings} 
+          label="Paramètres" 
+          color="muted" 
+          onClick={() => navigate('/settings')}
+          delay={4}
         />
       </div>
 
