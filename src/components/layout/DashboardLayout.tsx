@@ -11,7 +11,7 @@ import {
   Search,
   Home,
   MessageCircle,
-  User,
+  Settings,
   Package
 } from "lucide-react";
 
@@ -82,7 +82,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           <NavItem icon={Search} label="Explorer" onClick={() => navigate('/catalog')} />
           <NavItem icon={Package} label="Commandes" onClick={() => navigate('/orders')} />
           <NavItem icon={MessageCircle} label="Messages" onClick={() => navigate('/messages')} />
-          <NavItem icon={User} label="Profil" />
+          <NavItem icon={Settings} label="Paramètres" onClick={() => navigate('/settings')} />
         </div>
       </nav>
     </div>
