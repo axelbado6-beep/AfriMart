@@ -18,6 +18,7 @@ import ProductDetails from "./pages/ProductDetails";
 import Orders from "./pages/Orders";
 import BusinessOrders from "./pages/BusinessOrders";
 import Checkout from "./pages/Checkout";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -39,7 +40,8 @@ const App = () => (
             <Route path="/product/:productId" element={<ProductDetails />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route 
+            <Route path="/settings" element={<Settings />} />
+            <Route
               path="/my-products" 
               element={
                 <BusinessRoute>
