@@ -19,7 +19,9 @@ export type Database = {
           business_id: string
           created_at: string
           description: string | null
+          duration_type: string | null
           ended_at: string | null
+          expires_at: string | null
           id: string
           is_live: boolean
           likes_count: number
@@ -35,7 +37,9 @@ export type Database = {
           business_id: string
           created_at?: string
           description?: string | null
+          duration_type?: string | null
           ended_at?: string | null
+          expires_at?: string | null
           id?: string
           is_live?: boolean
           likes_count?: number
@@ -51,7 +55,9 @@ export type Database = {
           business_id?: string
           created_at?: string
           description?: string | null
+          duration_type?: string | null
           ended_at?: string | null
+          expires_at?: string | null
           id?: string
           is_live?: boolean
           likes_count?: number
@@ -501,7 +507,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
-      media_type: "photo" | "reel" | "live"
+      media_type: "photo" | "reel" | "live" | "story"
       order_status:
         | "pending"
         | "confirmed"
@@ -638,7 +644,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
-      media_type: ["photo", "reel", "live"],
+      media_type: ["photo", "reel", "live", "story"],
       order_status: [
         "pending",
         "confirmed",
