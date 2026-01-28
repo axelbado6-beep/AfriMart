@@ -11,12 +11,15 @@ import {
   Grid3X3,
   Store,
   ShoppingCart,
-  Phone
+  Phone,
+  Plus
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useCart } from "@/contexts/CartContext";
 import { ReviewSection } from "@/components/reviews/ReviewSection";
+import StoryCircles from "@/components/stories/StoryCircles";
+import StoryUploadModal from "@/components/media-editor/StoryUploadModal";
 import type { Tables } from "@/integrations/supabase/types";
 
 type BusinessProfile = Tables<"business_profiles">;
@@ -32,6 +35,8 @@ const BusinessPublicProfile = () => {
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [isOwner, setIsOwner] = useState(false);
+  const [storyModalOpen, setStoryModalOpen] = useState(false);
   
   const { toggleFavorite, isFavorite } = useFavorites(currentUserId);
 
@@ -42,6 +47,15 @@ const BusinessPublicProfile = () => {
     };
     checkUser();
   }, []);
+
+  // Check if current user is the business owner
+  useEffect(() => {
+    if (business && currentUserId) {
+      setIsOwner(business.user_id === currentUserId);
+    } else {
+      setIsOwner(false);
+    }
+  }, [business, currentUserId]);
 
   useEffect(() => {
     const fetchBusiness = async () => {
@@ -250,6 +264,28 @@ const BusinessPublicProfile = () => {
           </div>
         </div>
       </div>
+
+      {/* Stories Section */}
+      <div className="container mx-auto px-4">
+        <StoryCircles 
+          businessId={business.id}
+          showAddButton={true}
+          onAddClick={() => setStoryModalOpen(true)}
+          currentUserId={currentUserId}
+          isOwner={isOwner}
+        />
+      </div>
+
+      {/* Story Upload Modal */}
+      <StoryUploadModal
+        open={storyModalOpen}
+        onOpenChange={setStoryModalOpen}
+        businessId={business.id}
+        onSuccess={() => {
+          // Refresh stories
+          window.location.reload();
+        }}
+      />
 
       {/* Products Grid */}
       <div className="container mx-auto px-4 py-6">
