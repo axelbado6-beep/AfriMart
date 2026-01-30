@@ -145,9 +145,9 @@ const StoryCircles = ({
         {showAddButton && isOwner && (
           <button
             onClick={onAddClick}
-            className="flex flex-col items-center gap-2 flex-shrink-0"
+            className="flex flex-col items-center gap-2 flex-shrink-0 animate-bounce-in"
           >
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-afrimart-orange to-afrimart-gold flex items-center justify-center relative">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-afrimart-orange to-afrimart-gold flex items-center justify-center relative transition-all duration-300 hover:scale-110 hover:shadow-lg active:scale-95">
               <div className="w-14 h-14 rounded-full bg-background flex items-center justify-center">
                 <Plus className="w-6 h-6 text-afrimart-orange" />
               </div>
@@ -157,20 +157,21 @@ const StoryCircles = ({
         )}
 
         {/* Story Circles */}
-        {businessesWithStories.map((business) => (
+        {businessesWithStories.map((business, index) => (
           <button
             key={business.id}
             onClick={() => handleStoryClick(business)}
-            className="flex flex-col items-center gap-2 flex-shrink-0 group"
+            className="flex flex-col items-center gap-2 flex-shrink-0 group animate-fade-in opacity-0"
+            style={{ animationDelay: `${index * 80}ms`, animationFillMode: 'forwards' }}
           >
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-afrimart-orange via-afrimart-gold to-afrimart-green p-0.5 animate-pulse-slow">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-afrimart-orange via-afrimart-gold to-afrimart-green p-0.5 animate-pulse-slow transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-active:scale-95">
               <div className="w-full h-full rounded-full bg-background p-0.5">
                 <div className="w-full h-full rounded-full overflow-hidden bg-muted flex items-center justify-center">
                   {business.logo_url ? (
                     <img 
                       src={business.logo_url} 
                       alt={business.business_name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                     />
                   ) : (
                     <Store className="w-6 h-6 text-muted-foreground" />
@@ -178,7 +179,7 @@ const StoryCircles = ({
                 </div>
               </div>
             </div>
-            <span className="text-xs text-center max-w-16 truncate group-hover:text-primary transition-colors">
+            <span className="text-xs text-center max-w-16 truncate group-hover:text-primary transition-colors duration-200">
               {business.business_name}
             </span>
           </button>

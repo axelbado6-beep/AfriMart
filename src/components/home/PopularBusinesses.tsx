@@ -64,10 +64,10 @@ export function PopularBusinesses() {
   }
 
   return (
-    <section className="py-12 bg-muted/30">
+    <section className="py-12 bg-muted/30 animate-fade-in">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
-          <div>
+          <div className="animate-fade-in-left">
             <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
               Entreprises populaires
             </h2>
@@ -75,12 +75,12 @@ export function PopularBusinesses() {
               Découvrez les vendeurs les plus suivis
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 animate-fade-in-right">
             <Button
               variant="outline"
               size="icon"
               onClick={scrollPrev}
-              className="hidden md:flex"
+              className="hidden md:flex hover:scale-110 active:scale-95 transition-transform"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -88,12 +88,12 @@ export function PopularBusinesses() {
               variant="outline"
               size="icon"
               onClick={scrollNext}
-              className="hidden md:flex"
+              className="hidden md:flex hover:scale-110 active:scale-95 transition-transform"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
             <Link to="/catalog">
-              <Button variant="outline" className="gap-2">
+              <Button variant="outline" className="gap-2 hover:scale-105 active:scale-95 transition-transform">
                 Voir tout <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
@@ -105,14 +105,14 @@ export function PopularBusinesses() {
             {businesses.map((business, index) => (
               <div 
                 key={business.id} 
-                className="flex-[0_0_280px] md:flex-[0_0_300px] animate-fade-up"
-                style={{ animationDelay: `${index * 0.05}s` }}
+                className="flex-[0_0_280px] md:flex-[0_0_300px] animate-fade-in-up opacity-0"
+                style={{ animationDelay: `${index * 80}ms`, animationFillMode: 'forwards' }}
               >
                 <Link to={`/business/${business.id}`}>
-                  <Card className="hover-lift h-full">
+                  <Card className="card-interactive h-full group">
                     <CardContent className="p-6">
                       <div className="flex items-start gap-4">
-                        <Avatar className="h-16 w-16 border-2 border-border">
+                        <Avatar className="h-16 w-16 border-2 border-border transition-all duration-300 group-hover:scale-110 group-hover:border-primary group-hover:shadow-lg">
                           <AvatarImage src={business.logo_url || undefined} />
                           <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
                             {business.business_name.charAt(0).toUpperCase()}
@@ -120,15 +120,15 @@ export function PopularBusinesses() {
                         </Avatar>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <h3 className="font-semibold text-foreground truncate">
+                            <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors duration-300">
                               {business.business_name}
                             </h3>
                             {business.is_verified && (
-                              <CheckCircle className="h-4 w-4 text-secondary shrink-0" />
+                              <CheckCircle className="h-4 w-4 text-secondary shrink-0 group-hover:scale-125 transition-transform duration-300" />
                             )}
                           </div>
                           {business.category && (
-                            <Badge variant="secondary" className="mt-1 text-xs">
+                            <Badge variant="secondary" className="mt-1 text-xs transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
                               {business.category}
                             </Badge>
                           )}
@@ -137,12 +137,12 @@ export function PopularBusinesses() {
                       
                       <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
                         {business.location && (
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 transition-colors duration-200 group-hover:text-foreground">
                             <MapPin className="h-3 w-3" />
                             <span className="truncate">{business.location}</span>
                           </div>
                         )}
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 transition-colors duration-200 group-hover:text-foreground">
                           <Users className="h-3 w-3" />
                           <span>{business.followers_count || 0} abonnés</span>
                         </div>

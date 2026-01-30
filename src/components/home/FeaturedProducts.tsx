@@ -87,10 +87,10 @@ export function FeaturedProducts() {
   }
 
   return (
-    <section className="py-12">
+    <section className="py-12 animate-fade-in">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
-          <div>
+          <div className="animate-fade-in-left">
             <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
               Produits en vedette
             </h2>
@@ -98,9 +98,9 @@ export function FeaturedProducts() {
               Les dernières nouveautés de nos vendeurs
             </p>
           </div>
-          <Link to="/catalog">
-            <Button variant="outline" className="gap-2">
-              Voir tout <ArrowRight className="h-4 w-4" />
+          <Link to="/catalog" className="animate-fade-in-right">
+            <Button variant="outline" className="gap-2 hover:scale-105 active:scale-95 transition-transform duration-200">
+              Voir tout <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
         </div>
@@ -109,8 +109,8 @@ export function FeaturedProducts() {
           {products.map((product, index) => (
             <div 
               key={product.id} 
-              className="animate-fade-up"
-              style={{ animationDelay: `${index * 0.05}s` }}
+              className="animate-fade-in-up opacity-0"
+              style={{ animationDelay: `${index * 80}ms`, animationFillMode: 'forwards' }}
             >
               <ProductCard
                 id={product.id}

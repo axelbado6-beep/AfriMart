@@ -2,25 +2,34 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { 
   X, 
   Type, 
-  Palette, 
   Sliders, 
   Sparkles, 
   Music, 
   Scissors,
   RotateCcw,
-  Download,
-  Upload,
   Play,
   Pause,
-  Check
+  Check,
+  Smile,
+  Wand2,
+  Pencil,
+  ChevronLeft,
+  ChevronRight,
+  ZoomIn,
+  ZoomOut,
+  RotateCw,
+  FlipHorizontal
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import EditorStickers, { Sticker } from "./EditorStickers";
+import EditorEffects, { getEffectCSS } from "./EditorEffects";
+import EditorDrawing from "./EditorDrawing";
+import EditorMusic from "./EditorMusic";
 
 interface MediaEditorProps {
   file: File;
@@ -36,6 +45,7 @@ interface TextOverlay {
   fontSize: number;
   color: string;
   fontFamily: string;
+  animation: string;
 }
 
 interface FilterSettings {
@@ -47,7 +57,7 @@ interface FilterSettings {
 }
 
 const FILTERS = [
-  { name: "Normal", settings: { brightness: 100, contrast: 100, saturation: 100, blur: 0, hueRotate: 0 } },
+  { name: "Original", settings: { brightness: 100, contrast: 100, saturation: 100, blur: 0, hueRotate: 0 } },
   { name: "Vivid", settings: { brightness: 110, contrast: 120, saturation: 130, blur: 0, hueRotate: 0 } },
   { name: "Vintage", settings: { brightness: 90, contrast: 110, saturation: 70, blur: 0, hueRotate: 20 } },
   { name: "Noir", settings: { brightness: 100, contrast: 130, saturation: 0, blur: 0, hueRotate: 0 } },
@@ -55,15 +65,25 @@ const FILTERS = [
   { name: "Cool", settings: { brightness: 100, contrast: 105, saturation: 90, blur: 0, hueRotate: 180 } },
   { name: "Dramatic", settings: { brightness: 90, contrast: 150, saturation: 80, blur: 0, hueRotate: 0 } },
   { name: "Soft", settings: { brightness: 110, contrast: 90, saturation: 90, blur: 1, hueRotate: 0 } },
+  { name: "Sunset", settings: { brightness: 105, contrast: 110, saturation: 120, blur: 0, hueRotate: -20 } },
+  { name: "Forest", settings: { brightness: 95, contrast: 105, saturation: 90, blur: 0, hueRotate: 60 } },
 ];
 
 const FONTS = [
-  "Inter",
+  "Montserrat",
+  "Poppins",
   "Georgia",
-  "Courier New",
   "Impact",
-  "Comic Sans MS",
   "Arial Black",
+  "Courier New",
+];
+
+const TEXT_ANIMATIONS = [
+  { id: "none", name: "Aucune" },
+  { id: "bounce", name: "Rebond" },
+  { id: "pulse", name: "Pulsation" },
+  { id: "shake", name: "Tremblement" },
+  { id: "glow", name: "Brillance" },
 ];
 
 const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
@@ -74,7 +94,15 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
   const [duration, setDuration] = useState(0);
   const [trimStart, setTrimStart] = useState(0);
   const [trimEnd, setTrimEnd] = useState(100);
+  const [activeTab, setActiveTab] = useState("filters");
+  const [showPanel, setShowPanel] = useState(true);
   
+  // Transform states
+  const [zoom, setZoom] = useState(100);
+  const [rotation, setRotation] = useState(0);
+  const [flipH, setFlipH] = useState(false);
+  
+  // Filter states
   const [filters, setFilters] = useState<FilterSettings>({
     brightness: 100,
     contrast: 100,
@@ -83,9 +111,24 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
     hueRotate: 0,
   });
   
+  // Effect state
+  const [selectedEffect, setSelectedEffect] = useState<string | null>(null);
+  
+  // Text overlays
   const [textOverlays, setTextOverlays] = useState<TextOverlay[]>([]);
   const [selectedText, setSelectedText] = useState<string | null>(null);
   const [newTextInput, setNewTextInput] = useState("");
+  
+  // Stickers
+  const [stickers, setStickers] = useState<Sticker[]>([]);
+  const [selectedSticker, setSelectedSticker] = useState<string | null>(null);
+  
+  // Drawing
+  const [drawingDataUrl, setDrawingDataUrl] = useState<string | null>(null);
+  
+  // Music
+  const [selectedMusic, setSelectedMusic] = useState<string | null>(null);
+  const [musicVolume, setMusicVolume] = useState(70);
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -112,13 +155,19 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
   }, [mediaUrl, isVideo]);
 
   const getFilterStyle = () => {
-    return `
+    const baseFilter = `
       brightness(${filters.brightness}%) 
       contrast(${filters.contrast}%) 
       saturate(${filters.saturation}%) 
       blur(${filters.blur}px) 
       hue-rotate(${filters.hueRotate}deg)
     `;
+    const effectFilter = getEffectCSS(selectedEffect);
+    return effectFilter ? `${baseFilter} ${effectFilter}` : baseFilter;
+  };
+
+  const getTransformStyle = () => {
+    return `scale(${zoom / 100}) rotate(${rotation}deg) scaleX(${flipH ? -1 : 1})`;
   };
 
   const applyFilter = (filterPreset: typeof FILTERS[0]) => {
@@ -146,7 +195,8 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
       y: 50,
       fontSize: 32,
       color: "#ffffff",
-      fontFamily: "Inter",
+      fontFamily: "Montserrat",
+      animation: "none",
     };
     setTextOverlays([...textOverlays, newText]);
     setNewTextInput("");
@@ -164,6 +214,30 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
     if (selectedText === id) setSelectedText(null);
   };
 
+  const addSticker = (stickerData: Omit<Sticker, "id" | "x" | "y" | "scale" | "rotation">) => {
+    const newSticker: Sticker = {
+      ...stickerData,
+      id: Date.now().toString(),
+      x: 50,
+      y: 30,
+      scale: 1,
+      rotation: 0,
+    };
+    setStickers([...stickers, newSticker]);
+    setSelectedSticker(newSticker.id);
+  };
+
+  const updateSticker = (id: string, updates: Partial<Sticker>) => {
+    setStickers(stickers.map(s => 
+      s.id === id ? { ...s, ...updates } : s
+    ));
+  };
+
+  const removeSticker = (id: string) => {
+    setStickers(stickers.filter(s => s.id !== id));
+    if (selectedSticker === id) setSelectedSticker(null);
+  };
+
   const handleSave = async () => {
     // For photos, render to canvas and export
     if (!isVideo && imageRef.current && canvasRef.current) {
@@ -175,24 +249,68 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
       canvas.height = img.naturalHeight;
       
       if (ctx) {
+        ctx.save();
+        
+        // Apply transform
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate((rotation * Math.PI) / 180);
+        ctx.scale(flipH ? -1 : 1, 1);
+        ctx.scale(zoom / 100, zoom / 100);
+        ctx.translate(-canvas.width / 2, -canvas.height / 2);
+        
         // Apply filters
         ctx.filter = getFilterStyle();
         ctx.drawImage(img, 0, 0);
         
-        // Reset filter for text
+        ctx.restore();
+        
+        // Reset filter for overlays
         ctx.filter = "none";
+        
+        // Draw stickers
+        stickers.forEach(sticker => {
+          if (sticker.type === "emoji") {
+            const fontSize = 60 * sticker.scale;
+            ctx.font = `${fontSize}px Arial`;
+            ctx.textAlign = "center";
+            ctx.save();
+            ctx.translate((sticker.x / 100) * canvas.width, (sticker.y / 100) * canvas.height);
+            ctx.rotate((sticker.rotation * Math.PI) / 180);
+            ctx.fillText(sticker.content, 0, fontSize / 3);
+            ctx.restore();
+          }
+        });
         
         // Draw text overlays
         textOverlays.forEach(text => {
           ctx.font = `${text.fontSize * (canvas.width / 400)}px ${text.fontFamily}`;
           ctx.fillStyle = text.color;
           ctx.textAlign = "center";
+          ctx.shadowColor = "rgba(0,0,0,0.8)";
+          ctx.shadowBlur = 4;
+          ctx.shadowOffsetX = 2;
+          ctx.shadowOffsetY = 2;
           ctx.fillText(
             text.text, 
             (text.x / 100) * canvas.width, 
             (text.y / 100) * canvas.height
           );
         });
+        
+        // Draw drawing layer if exists
+        if (drawingDataUrl) {
+          const drawingImg = new Image();
+          drawingImg.onload = () => {
+            ctx.drawImage(drawingImg, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob((blob) => {
+              if (blob) {
+                onSave(blob, blob);
+              }
+            }, "image/jpeg", 0.95);
+          };
+          drawingImg.src = drawingDataUrl;
+          return;
+        }
         
         canvas.toBlob((blob) => {
           if (blob) {
@@ -201,11 +319,8 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
         }, "image/jpeg", 0.95);
       }
     } else if (isVideo) {
-      // For video, we'll save with metadata for now
-      // Full video processing would require FFmpeg WebAssembly
       const blob = new Blob([file], { type: file.type });
       
-      // Create thumbnail from current frame
       if (videoRef.current && canvasRef.current) {
         const video = videoRef.current;
         const canvas = canvasRef.current;
@@ -226,18 +341,39 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
   };
 
   const selectedTextOverlay = textOverlays.find(t => t.id === selectedText);
+  const selectedStickerData = stickers.find(s => s.id === selectedSticker);
+
+  const getTextAnimationClass = (animId: string) => {
+    switch (animId) {
+      case "bounce": return "animate-bounce";
+      case "pulse": return "animate-pulse";
+      case "shake": return "animate-wiggle";
+      case "glow": return "animate-pulse-slow";
+      default: return "";
+    }
+  };
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col">
+    <div className="fixed inset-0 z-50 bg-background flex flex-col animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <Button variant="ghost" size="icon" onClick={onCancel}>
+      <div className="flex items-center justify-between p-3 md:p-4 border-b border-border bg-card/80 backdrop-blur-sm">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={onCancel}
+          className="hover:scale-110 active:scale-95 transition-transform"
+        >
           <X className="w-5 h-5" />
         </Button>
-        <h2 className="font-display font-bold">Éditeur {isVideo ? "Vidéo" : "Photo"}</h2>
-        <Button onClick={handleSave} className="btn-business gap-2">
+        <h2 className="font-display font-bold text-lg">
+          Éditeur {isVideo ? "Vidéo" : "Photo"}
+        </h2>
+        <Button 
+          onClick={handleSave} 
+          className="btn-business gap-2 hover:scale-105 active:scale-95 transition-transform"
+        >
           <Check className="w-4 h-4" />
-          Terminer
+          <span className="hidden sm:inline">Terminer</span>
         </Button>
       </div>
 
@@ -246,14 +382,63 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
         {/* Preview Area */}
         <div 
           ref={containerRef}
-          className="flex-1 relative flex items-center justify-center bg-black/90 overflow-hidden"
+          className="flex-1 relative flex items-center justify-center bg-black/95 overflow-hidden"
         >
-          <div className="relative max-w-full max-h-full">
+          {/* Quick Transform Controls */}
+          <div className="absolute top-4 left-4 flex gap-2 z-10">
+            <Button
+              variant="secondary"
+              size="icon"
+              className="w-9 h-9 bg-black/50 hover:bg-black/70 text-white border-none backdrop-blur-sm transition-all hover:scale-110"
+              onClick={() => setZoom(z => Math.min(200, z + 10))}
+            >
+              <ZoomIn className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="secondary"
+              size="icon"
+              className="w-9 h-9 bg-black/50 hover:bg-black/70 text-white border-none backdrop-blur-sm transition-all hover:scale-110"
+              onClick={() => setZoom(z => Math.max(50, z - 10))}
+            >
+              <ZoomOut className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="secondary"
+              size="icon"
+              className="w-9 h-9 bg-black/50 hover:bg-black/70 text-white border-none backdrop-blur-sm transition-all hover:scale-110"
+              onClick={() => setRotation(r => (r + 90) % 360)}
+            >
+              <RotateCw className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="secondary"
+              size="icon"
+              className={`w-9 h-9 bg-black/50 hover:bg-black/70 text-white border-none backdrop-blur-sm transition-all hover:scale-110 ${flipH ? "ring-2 ring-primary" : ""}`}
+              onClick={() => setFlipH(!flipH)}
+            >
+              <FlipHorizontal className="w-4 h-4" />
+            </Button>
+          </div>
+
+          {/* Toggle Panel Button (Mobile) */}
+          <Button
+            variant="secondary"
+            size="icon"
+            className="absolute top-4 right-4 z-10 md:hidden w-9 h-9 bg-black/50 hover:bg-black/70 text-white border-none backdrop-blur-sm"
+            onClick={() => setShowPanel(!showPanel)}
+          >
+            {showPanel ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          </Button>
+
+          <div 
+            className="relative max-w-full max-h-full transition-transform duration-300"
+            style={{ transform: getTransformStyle() }}
+          >
             {isVideo ? (
               <video
                 ref={videoRef}
                 src={mediaUrl}
-                className="max-w-full max-h-[60vh] md:max-h-[70vh]"
+                className="max-w-full max-h-[55vh] md:max-h-[70vh] rounded-lg shadow-2xl"
                 style={{ filter: getFilterStyle() }}
                 onClick={togglePlay}
                 playsInline
@@ -263,19 +448,38 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
                 ref={imageRef}
                 src={mediaUrl}
                 alt="Editing"
-                className="max-w-full max-h-[60vh] md:max-h-[70vh] object-contain"
+                className="max-w-full max-h-[55vh] md:max-h-[70vh] object-contain rounded-lg shadow-2xl"
                 style={{ filter: getFilterStyle() }}
                 crossOrigin="anonymous"
               />
             )}
             
+            {/* Stickers */}
+            {stickers.map(sticker => (
+              <div
+                key={sticker.id}
+                className={`absolute cursor-move select-none transition-all hover:scale-110 ${
+                  selectedSticker === sticker.id ? "ring-2 ring-primary ring-offset-2 ring-offset-black" : ""
+                }`}
+                style={{
+                  left: `${sticker.x}%`,
+                  top: `${sticker.y}%`,
+                  transform: `translate(-50%, -50%) scale(${sticker.scale}) rotate(${sticker.rotation}deg)`,
+                  fontSize: sticker.type === "emoji" ? "48px" : "32px",
+                }}
+                onClick={() => setSelectedSticker(sticker.id)}
+              >
+                {sticker.type === "emoji" && sticker.content}
+              </div>
+            ))}
+
             {/* Text Overlays */}
             {textOverlays.map(text => (
               <div
                 key={text.id}
                 className={`absolute cursor-move select-none transition-all ${
-                  selectedText === text.id ? "ring-2 ring-primary ring-offset-2" : ""
-                }`}
+                  selectedText === text.id ? "ring-2 ring-primary ring-offset-2 ring-offset-black" : ""
+                } ${getTextAnimationClass(text.animation)}`}
                 style={{
                   left: `${text.x}%`,
                   top: `${text.y}%`,
@@ -283,7 +487,7 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
                   fontSize: `${text.fontSize}px`,
                   color: text.color,
                   fontFamily: text.fontFamily,
-                  textShadow: "2px 2px 4px rgba(0,0,0,0.8)",
+                  textShadow: "2px 2px 4px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)",
                 }}
                 onClick={() => setSelectedText(text.id)}
               >
@@ -293,22 +497,22 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
 
             {/* Video Controls */}
             {isVideo && (
-              <div className="absolute bottom-4 left-4 right-4 flex items-center gap-4">
+              <div className="absolute bottom-4 left-4 right-4 flex items-center gap-4 animate-slide-up">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="bg-black/50 text-white hover:bg-black/70"
+                  className="bg-black/50 text-white hover:bg-black/70 hover:scale-110 transition-all"
                   onClick={togglePlay}
                 >
                   {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
                 </Button>
-                <div className="flex-1 bg-white/20 rounded-full h-1">
+                <div className="flex-1 bg-white/20 rounded-full h-1.5 overflow-hidden">
                   <div 
-                    className="bg-primary h-full rounded-full"
+                    className="bg-primary h-full rounded-full transition-all duration-100"
                     style={{ width: `${(currentTime / duration) * 100}%` }}
                   />
                 </div>
-                <span className="text-white text-sm">
+                <span className="text-white text-sm font-medium">
                   {Math.floor(currentTime)}s / {Math.floor(duration)}s
                 </span>
               </div>
@@ -319,127 +523,88 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
         </div>
 
         {/* Controls Panel */}
-        <div className="w-full md:w-80 border-t md:border-t-0 md:border-l border-border bg-card">
-          <Tabs defaultValue="filters" className="h-full flex flex-col">
-            <TabsList className="w-full justify-start rounded-none border-b border-border bg-transparent p-0">
-              <TabsTrigger 
-                value="filters" 
-                className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
-              >
-                <Sparkles className="w-4 h-4 mr-2" />
-                Filtres
-              </TabsTrigger>
-              <TabsTrigger 
-                value="adjust"
-                className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
-              >
-                <Sliders className="w-4 h-4 mr-2" />
-                Ajuster
-              </TabsTrigger>
-              <TabsTrigger 
-                value="text"
-                className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
-              >
-                <Type className="w-4 h-4 mr-2" />
-                Texte
-              </TabsTrigger>
-              {isVideo && (
+        <div className={`w-full md:w-96 border-t md:border-t-0 md:border-l border-border bg-card transition-all duration-300 ${
+          showPanel ? "max-h-[45vh] md:max-h-full" : "max-h-0 md:max-h-full overflow-hidden md:overflow-visible"
+        }`}>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
+            <TabsList className="w-full grid grid-cols-6 rounded-none border-b border-border bg-transparent p-0 h-auto">
+              {[
+                { value: "filters", icon: Sparkles, label: "Filtres" },
+                { value: "adjust", icon: Sliders, label: "Ajuster" },
+                { value: "effects", icon: Wand2, label: "Effets" },
+                { value: "stickers", icon: Smile, label: "Stickers" },
+                { value: "text", icon: Type, label: "Texte" },
+                { value: "draw", icon: Pencil, label: "Dessin" },
+              ].map((tab) => (
                 <TabsTrigger 
-                  value="trim"
-                  className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
+                  key={tab.value}
+                  value={tab.value} 
+                  className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary py-3 transition-all data-[state=active]:bg-primary/5"
                 >
-                  <Scissors className="w-4 h-4 mr-2" />
-                  Couper
+                  <tab.icon className="w-4 h-4" />
+                  <span className="hidden lg:inline ml-2 text-xs">{tab.label}</span>
                 </TabsTrigger>
-              )}
+              ))}
             </TabsList>
 
             <ScrollArea className="flex-1">
-              <TabsContent value="filters" className="p-4 m-0">
-                <div className="grid grid-cols-3 gap-2">
-                  {FILTERS.map(filter => (
+              {/* Filters Tab */}
+              <TabsContent value="filters" className="p-4 m-0 animate-fade-in">
+                <div className="grid grid-cols-4 gap-2">
+                  {FILTERS.map((filter, i) => (
                     <button
                       key={filter.name}
                       onClick={() => applyFilter(filter)}
-                      className={`p-2 rounded-lg border transition-all ${
+                      className={`p-2 rounded-xl border transition-all duration-300 hover:scale-105 active:scale-95 ${
                         JSON.stringify(filters) === JSON.stringify(filter.settings)
-                          ? "border-primary bg-primary/10"
+                          ? "border-primary bg-primary/10 scale-105"
                           : "border-border hover:border-primary/50"
                       }`}
+                      style={{ animationDelay: `${i * 40}ms` }}
                     >
                       <div 
-                        className="aspect-square rounded bg-muted mb-1 overflow-hidden"
+                        className="aspect-square rounded-lg mb-1 overflow-hidden"
                         style={{
                           background: `linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)))`,
                           filter: `brightness(${filter.settings.brightness}%) contrast(${filter.settings.contrast}%) saturate(${filter.settings.saturation}%) hue-rotate(${filter.settings.hueRotate}deg)`
                         }}
                       />
-                      <span className="text-xs">{filter.name}</span>
+                      <span className="text-[10px] font-medium">{filter.name}</span>
                     </button>
                   ))}
                 </div>
               </TabsContent>
 
-              <TabsContent value="adjust" className="p-4 m-0 space-y-6">
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <Label>Luminosité</Label>
-                    <span className="text-sm text-muted-foreground">{filters.brightness}%</span>
+              {/* Adjust Tab */}
+              <TabsContent value="adjust" className="p-4 m-0 space-y-5 animate-fade-in">
+                {[
+                  { label: "Luminosité", key: "brightness", min: 50, max: 150, unit: "%" },
+                  { label: "Contraste", key: "contrast", min: 50, max: 150, unit: "%" },
+                  { label: "Saturation", key: "saturation", min: 0, max: 200, unit: "%" },
+                  { label: "Teinte", key: "hueRotate", min: 0, max: 360, unit: "°" },
+                  { label: "Flou", key: "blur", min: 0, max: 10, unit: "px" },
+                ].map((item, i) => (
+                  <div key={item.key} className="space-y-2" style={{ animationDelay: `${i * 50}ms` }}>
+                    <div className="flex justify-between">
+                      <Label>{item.label}</Label>
+                      <span className="text-sm text-muted-foreground font-medium">
+                        {filters[item.key as keyof FilterSettings]}{item.unit}
+                      </span>
+                    </div>
+                    <Slider
+                      value={[filters[item.key as keyof FilterSettings]]}
+                      onValueChange={([v]) => setFilters({...filters, [item.key]: v})}
+                      min={item.min}
+                      max={item.max}
+                      step={1}
+                      className="transition-all"
+                    />
                   </div>
-                  <Slider
-                    value={[filters.brightness]}
-                    onValueChange={([v]) => setFilters({...filters, brightness: v})}
-                    min={50}
-                    max={150}
-                    step={1}
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <Label>Contraste</Label>
-                    <span className="text-sm text-muted-foreground">{filters.contrast}%</span>
-                  </div>
-                  <Slider
-                    value={[filters.contrast]}
-                    onValueChange={([v]) => setFilters({...filters, contrast: v})}
-                    min={50}
-                    max={150}
-                    step={1}
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <Label>Saturation</Label>
-                    <span className="text-sm text-muted-foreground">{filters.saturation}%</span>
-                  </div>
-                  <Slider
-                    value={[filters.saturation]}
-                    onValueChange={([v]) => setFilters({...filters, saturation: v})}
-                    min={0}
-                    max={200}
-                    step={1}
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <Label>Teinte</Label>
-                    <span className="text-sm text-muted-foreground">{filters.hueRotate}°</span>
-                  </div>
-                  <Slider
-                    value={[filters.hueRotate]}
-                    onValueChange={([v]) => setFilters({...filters, hueRotate: v})}
-                    min={0}
-                    max={360}
-                    step={1}
-                  />
-                </div>
+                ))}
 
                 <Button 
                   variant="outline" 
-                  className="w-full"
+                  className="w-full hover:scale-[1.02] active:scale-[0.98] transition-transform"
                   onClick={() => setFilters({
                     brightness: 100,
                     contrast: 100,
@@ -453,26 +618,105 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
                 </Button>
               </TabsContent>
 
-              <TabsContent value="text" className="p-4 m-0 space-y-4">
+              {/* Effects Tab */}
+              <TabsContent value="effects" className="p-4 m-0">
+                <EditorEffects 
+                  selectedEffect={selectedEffect}
+                  onSelectEffect={setSelectedEffect}
+                />
+              </TabsContent>
+
+              {/* Stickers Tab */}
+              <TabsContent value="stickers" className="p-4 m-0">
+                <EditorStickers onAddSticker={addSticker} />
+                
+                {selectedStickerData && (
+                  <div className="mt-4 p-4 bg-muted rounded-xl space-y-4 animate-fade-in">
+                    <div className="flex justify-between items-center">
+                      <Label>Modifier le sticker</Label>
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground"
+                        onClick={() => removeSticker(selectedStickerData.id)}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label>Taille</Label>
+                      <Slider
+                        value={[selectedStickerData.scale * 100]}
+                        onValueChange={([v]) => updateSticker(selectedStickerData.id, { scale: v / 100 })}
+                        min={50}
+                        max={200}
+                        step={5}
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-2">
+                        <Label>Position X</Label>
+                        <Slider
+                          value={[selectedStickerData.x]}
+                          onValueChange={([v]) => updateSticker(selectedStickerData.id, { x: v })}
+                          min={0}
+                          max={100}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Position Y</Label>
+                        <Slider
+                          value={[selectedStickerData.y]}
+                          onValueChange={([v]) => updateSticker(selectedStickerData.id, { y: v })}
+                          min={0}
+                          max={100}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label>Rotation</Label>
+                      <Slider
+                        value={[selectedStickerData.rotation]}
+                        onValueChange={([v]) => updateSticker(selectedStickerData.id, { rotation: v })}
+                        min={-180}
+                        max={180}
+                        step={5}
+                      />
+                    </div>
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* Text Tab */}
+              <TabsContent value="text" className="p-4 m-0 space-y-4 animate-fade-in">
                 <div className="flex gap-2">
                   <Input
                     placeholder="Ajouter du texte..."
                     value={newTextInput}
                     onChange={(e) => setNewTextInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && addTextOverlay()}
+                    className="transition-all focus:scale-[1.02]"
                   />
-                  <Button onClick={addTextOverlay} size="icon">
+                  <Button 
+                    onClick={addTextOverlay} 
+                    size="icon"
+                    className="hover:scale-110 active:scale-95 transition-transform"
+                  >
                     <Type className="w-4 h-4" />
                   </Button>
                 </div>
 
                 {selectedTextOverlay && (
-                  <div className="space-y-4 p-4 bg-muted rounded-lg">
+                  <div className="space-y-4 p-4 bg-muted rounded-xl animate-fade-in">
                     <div className="flex justify-between items-center">
                       <Label>Éditer le texte</Label>
                       <Button 
                         variant="ghost" 
                         size="icon"
+                        className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground"
                         onClick={() => removeTextOverlay(selectedTextOverlay.id)}
                       >
                         <X className="w-4 h-4" />
@@ -489,42 +733,43 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
                       <Slider
                         value={[selectedTextOverlay.fontSize]}
                         onValueChange={([v]) => updateTextOverlay(selectedTextOverlay.id, { fontSize: v })}
-                        min={12}
-                        max={72}
-                        step={1}
+                        min={16}
+                        max={80}
+                        step={2}
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <Label>Position X</Label>
-                      <Slider
-                        value={[selectedTextOverlay.x]}
-                        onValueChange={([v]) => updateTextOverlay(selectedTextOverlay.id, { x: v })}
-                        min={0}
-                        max={100}
-                        step={1}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Position Y</Label>
-                      <Slider
-                        value={[selectedTextOverlay.y]}
-                        onValueChange={([v]) => updateTextOverlay(selectedTextOverlay.id, { y: v })}
-                        min={0}
-                        max={100}
-                        step={1}
-                      />
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-2">
+                        <Label>Position X</Label>
+                        <Slider
+                          value={[selectedTextOverlay.x]}
+                          onValueChange={([v]) => updateTextOverlay(selectedTextOverlay.id, { x: v })}
+                          min={0}
+                          max={100}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Position Y</Label>
+                        <Slider
+                          value={[selectedTextOverlay.y]}
+                          onValueChange={([v]) => updateTextOverlay(selectedTextOverlay.id, { y: v })}
+                          min={0}
+                          max={100}
+                        />
+                      </div>
                     </div>
 
                     <div className="space-y-2">
                       <Label>Couleur</Label>
-                      <div className="flex gap-2">
-                        {["#ffffff", "#000000", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"].map(color => (
+                      <div className="flex flex-wrap gap-2">
+                        {["#ffffff", "#000000", "#ef4444", "#f97316", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899"].map(color => (
                           <button
                             key={color}
-                            className={`w-8 h-8 rounded-full border-2 ${
-                              selectedTextOverlay.color === color ? "border-primary" : "border-transparent"
+                            className={`w-8 h-8 rounded-full border-2 transition-all duration-200 hover:scale-125 ${
+                              selectedTextOverlay.color === color 
+                                ? "border-primary ring-2 ring-primary/50 scale-110" 
+                                : "border-transparent hover:border-primary/50"
                             }`}
                             style={{ backgroundColor: color }}
                             onClick={() => updateTextOverlay(selectedTextOverlay.id, { color })}
@@ -536,7 +781,7 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
                     <div className="space-y-2">
                       <Label>Police</Label>
                       <select
-                        className="w-full p-2 bg-background border border-border rounded-md"
+                        className="w-full p-2 bg-background border border-border rounded-lg transition-all focus:ring-2 focus:ring-primary"
                         value={selectedTextOverlay.fontFamily}
                         onChange={(e) => updateTextOverlay(selectedTextOverlay.id, { fontFamily: e.target.value })}
                       >
@@ -547,29 +792,63 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
                         ))}
                       </select>
                     </div>
+
+                    <div className="space-y-2">
+                      <Label>Animation</Label>
+                      <div className="flex flex-wrap gap-2">
+                        {TEXT_ANIMATIONS.map(anim => (
+                          <button
+                            key={anim.id}
+                            onClick={() => updateTextOverlay(selectedTextOverlay.id, { animation: anim.id })}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105 ${
+                              selectedTextOverlay.animation === anim.id
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-background border border-border hover:border-primary"
+                            }`}
+                          >
+                            {anim.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 )}
 
                 {textOverlays.length > 0 && (
                   <div className="space-y-2">
                     <Label>Textes ajoutés</Label>
-                    {textOverlays.map(text => (
+                    {textOverlays.map((text, i) => (
                       <div 
                         key={text.id}
-                        className={`p-2 rounded border cursor-pointer transition-colors ${
-                          selectedText === text.id ? "border-primary bg-primary/10" : "border-border hover:border-primary/50"
+                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-200 hover:scale-[1.02] ${
+                          selectedText === text.id 
+                            ? "border-primary bg-primary/10" 
+                            : "border-border hover:border-primary/50"
                         }`}
                         onClick={() => setSelectedText(text.id)}
+                        style={{ animationDelay: `${i * 50}ms` }}
                       >
-                        {text.text}
+                        <span style={{ fontFamily: text.fontFamily, color: text.color }}>
+                          {text.text}
+                        </span>
                       </div>
                     ))}
                   </div>
                 )}
               </TabsContent>
 
+              {/* Drawing Tab */}
+              <TabsContent value="draw" className="p-4 m-0">
+                <EditorDrawing 
+                  canvasWidth={400}
+                  canvasHeight={600}
+                  onDrawingChange={setDrawingDataUrl}
+                />
+              </TabsContent>
+
+              {/* Video Trim Tab - Only for videos */}
               {isVideo && (
-                <TabsContent value="trim" className="p-4 m-0 space-y-4">
+                <TabsContent value="trim" className="p-4 m-0 space-y-4 animate-fade-in">
                   <div className="space-y-2">
                     <Label>Découper la vidéo</Label>
                     <p className="text-sm text-muted-foreground">
@@ -581,7 +860,7 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <Label>Début</Label>
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-sm text-muted-foreground font-medium">
                           {Math.floor((trimStart / 100) * duration)}s
                         </span>
                       </div>
@@ -597,7 +876,7 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <Label>Fin</Label>
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-sm text-muted-foreground font-medium">
                           {Math.floor((trimEnd / 100) * duration)}s
                         </span>
                       </div>
@@ -610,9 +889,9 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
                       />
                     </div>
 
-                    <div className="text-center p-4 bg-muted rounded-lg">
+                    <div className="text-center p-4 bg-muted rounded-xl">
                       <p className="text-sm text-muted-foreground">Durée sélectionnée</p>
-                      <p className="text-2xl font-bold">
+                      <p className="text-3xl font-bold text-primary">
                         {Math.floor(((trimEnd - trimStart) / 100) * duration)}s
                       </p>
                     </div>
@@ -620,6 +899,20 @@ const MediaEditor = ({ file, onSave, onCancel }: MediaEditorProps) => {
                 </TabsContent>
               )}
             </ScrollArea>
+            
+            {/* Music Tab - Fixed at bottom for videos */}
+            {isVideo && (
+              <div className="border-t border-border p-3">
+                <Button
+                  variant={selectedMusic ? "default" : "outline"}
+                  className="w-full gap-2"
+                  onClick={() => setActiveTab(activeTab === "music" ? "filters" : "music")}
+                >
+                  <Music className="w-4 h-4" />
+                  {selectedMusic ? "Musique ajoutée" : "Ajouter de la musique"}
+                </Button>
+              </div>
+            )}
           </Tabs>
         </div>
       </div>
