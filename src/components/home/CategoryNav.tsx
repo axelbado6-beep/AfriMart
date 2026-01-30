@@ -34,20 +34,21 @@ export function CategoryNav() {
   };
 
   return (
-    <section className="py-4 bg-muted/30 border-b border-border">
+    <section className="py-4 bg-muted/30 border-b border-border animate-fade-in">
       <div className="container mx-auto px-4">
         <ScrollArea className="w-full whitespace-nowrap">
           <div className="flex gap-3 pb-2">
-            {categories.map((category) => (
+            {categories.map((category, index) => (
               <button
                 key={category.name}
                 onClick={() => handleCategoryClick(category.name)}
-                className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-background transition-colors group shrink-0"
+                className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-background transition-all duration-300 group shrink-0 hover:scale-105 active:scale-95 animate-fade-in opacity-0"
+                style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'forwards' }}
               >
-                <div className={`p-3 rounded-xl ${category.color} group-hover:scale-110 transition-transform`}>
-                  <category.icon className="h-5 w-5" />
+                <div className={`p-3 rounded-xl ${category.color} transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:rotate-3`}>
+                  <category.icon className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
                 </div>
-                <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-all duration-200 group-hover:font-semibold">
                   {category.name}
                 </span>
               </button>
