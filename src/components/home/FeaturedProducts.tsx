@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2, Flame, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/products/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { Session } from "@supabase/supabase-js";
+import { cn } from "@/lib/utils";
 
 interface Product {
   id: string;
@@ -24,6 +25,7 @@ export function FeaturedProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
+  const [showProducts, setShowProducts] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,6 +57,7 @@ export function FeaturedProducts() {
 
       if (!error && data) {
         setProducts(data as Product[]);
+        setTimeout(() => setShowProducts(true), 100);
       }
       setLoading(false);
     };
@@ -72,10 +75,15 @@ export function FeaturedProducts() {
 
   if (loading) {
     return (
-      <section className="py-12">
+      <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="relative">
+              <div className="p-4 rounded-full bg-gradient-to-r from-afrimart-orange to-afrimart-gold animate-spin-slow">
+                <Loader2 className="h-8 w-8 text-white" />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-r from-afrimart-orange to-afrimart-gold rounded-full blur-xl opacity-50 animate-pulse" />
+            </div>
           </div>
         </div>
       </section>
@@ -87,30 +95,61 @@ export function FeaturedProducts() {
   }
 
   return (
-    <section className="py-12 animate-fade-in">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-8">
+    <section className="py-16 relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 right-0 w-72 h-72 bg-afrimart-orange/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-afrimart-green/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="flex items-center justify-between mb-10">
           <div className="animate-fade-in-left">
-            <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
-              Produits en vedette
-            </h2>
-            <p className="text-muted-foreground mt-1">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="relative p-2 rounded-xl bg-gradient-to-br from-afrimart-orange to-afrimart-gold shadow-lg">
+                <Flame className="h-5 w-5 text-white animate-pulse-slow" />
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-afrimart-orange to-afrimart-gold blur-lg opacity-60 animate-pulse" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
+                Produits en vedette
+              </h2>
+              <div className="hidden sm:flex items-center gap-1 px-3 py-1 rounded-full bg-afrimart-gold/20 text-afrimart-gold text-xs font-semibold animate-bounce-soft">
+                <Star className="w-3 h-3 fill-current" />
+                HOT
+              </div>
+            </div>
+            <p className="text-muted-foreground">
               Les dernières nouveautés de nos vendeurs
             </p>
           </div>
           <Link to="/catalog" className="animate-fade-in-right">
-            <Button variant="outline" className="gap-2 hover:scale-105 active:scale-95 transition-transform duration-200">
-              Voir tout <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            <Button 
+              variant="outline" 
+              className={cn(
+                "group gap-2 rounded-xl border-2 font-semibold transition-all duration-300",
+                "hover:border-afrimart-orange hover:bg-afrimart-orange/10 hover:text-afrimart-orange",
+                "hover:scale-105 active:scale-95"
+              )}
+            >
+              Voir tout 
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
         </div>
 
+        {/* Products Grid - Simultaneous reveal */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {products.map((product, index) => (
             <div 
               key={product.id} 
-              className="animate-fade-in-up opacity-0"
-              style={{ animationDelay: `${index * 80}ms`, animationFillMode: 'forwards' }}
+              className={cn(
+                "transition-all duration-500",
+                showProducts 
+                  ? "opacity-100 scale-100 translate-y-0" 
+                  : "opacity-0 scale-90 translate-y-8"
+              )}
+              style={{ 
+                // Tous en même temps - pas de délai échelonné
+                transitionDelay: '0ms'
+              }}
             >
               <ProductCard
                 id={product.id}
