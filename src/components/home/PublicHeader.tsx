@@ -13,13 +13,59 @@ interface PublicHeaderProps {
   onSearch?: (query: string) => void;
 }
 
+// Animated placeholder texts
+const placeholders = [
+  "Rechercher des robes africaines...",
+  "Trouver du beurre de karité...",
+  "Des bijoux artisanaux...",
+  "Des épices locales...",
+  "Des tissus wax...",
+  "Cadeaux de femme...",
+  "Mode traditionnelle...",
+];
+
 export function PublicHeader({ onSearch }: PublicHeaderProps) {
   const [session, setSession] = useState<Session | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [isTypingPlaceholder, setIsTypingPlaceholder] = useState(true);
+  const [displayedPlaceholder, setDisplayedPlaceholder] = useState("");
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  // Animated placeholder effect
+  useEffect(() => {
+    const currentPlaceholder = placeholders[placeholderIndex];
+    let charIndex = 0;
+    let isDeleting = false;
+    
+    const typeInterval = setInterval(() => {
+      if (!isDeleting) {
+        if (charIndex <= currentPlaceholder.length) {
+          setDisplayedPlaceholder(currentPlaceholder.slice(0, charIndex));
+          charIndex++;
+        } else {
+          // Pause before deleting
+          setTimeout(() => {
+            isDeleting = true;
+          }, 2000);
+        }
+      } else {
+        if (charIndex > 0) {
+          charIndex--;
+          setDisplayedPlaceholder(currentPlaceholder.slice(0, charIndex));
+        } else {
+          // Move to next placeholder
+          isDeleting = false;
+          setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
+        }
+      }
+    }, isDeleting ? 30 : 80);
+
+    return () => clearInterval(typeInterval);
+  }, [placeholderIndex]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -75,14 +121,14 @@ export function PublicHeader({ onSearch }: PublicHeaderProps) {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
                   <Input
                     type="search"
-                    placeholder="Rechercher des produits, entreprises..."
+                    placeholder={searchQuery ? "" : displayedPlaceholder + "│"}
                     value={searchQuery}
                     onChange={(e) => {
                       setSearchQuery(e.target.value);
                       setShowSuggestions(true);
                     }}
                     onFocus={() => setShowSuggestions(true)}
-                    className="pl-10 pr-4 bg-muted/50 border-border focus:bg-background transition-all duration-300 focus:shadow-lg focus:shadow-primary/10 focus:border-primary/50"
+                    className="pl-10 pr-10 h-12 bg-muted/50 border-2 border-transparent focus:border-primary/30 focus:bg-background transition-all duration-300 focus:shadow-lg focus:shadow-primary/10 rounded-xl"
                   />
                   {/* Animated sparkle icon */}
                   {searchQuery && (
@@ -150,14 +196,14 @@ export function PublicHeader({ onSearch }: PublicHeaderProps) {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder="Rechercher..."
+                  placeholder={searchQuery ? "" : displayedPlaceholder + "│"}
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
                     setShowSuggestions(true);
                   }}
                   onFocus={() => setShowSuggestions(true)}
-                  className="pl-10 pr-4 bg-muted/50 border-border"
+                  className="pl-10 pr-4 h-12 bg-muted/50 border-2 border-transparent focus:border-primary/30 rounded-xl"
                 />
               </div>
             </form>
