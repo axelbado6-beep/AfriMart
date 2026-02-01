@@ -6,46 +6,46 @@
 
 @layer base {
   :root {
-    /* AfriMart African Theme - Light Mode */
-    --background: 210 40% 98%;
-    --foreground: 220 50% 10%;
+    /* AfriMart African Theme - Light Mode - VIBRANT */
+    --background: 45 100% 99%;
+    --foreground: 220 60% 10%;
     
     --card: 0 0% 100%;
-    --card-foreground: 220 50% 10%;
+    --card-foreground: 220 60% 10%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 220 50% 10%;
+    --popover-foreground: 220 60% 10%;
     
-    /* Primary - Deep Blue Night */
-    --primary: 220 70% 20%;
+    /* Primary - Rich Deep Blue */
+    --primary: 220 80% 25%;
     --primary-foreground: 0 0% 100%;
     
-    /* Secondary - Vibrant Green */
-    --secondary: 145 65% 40%;
+    /* Secondary - Lush Green */
+    --secondary: 150 70% 42%;
     --secondary-foreground: 0 0% 100%;
     
-    /* Accent - Warm Orange */
-    --accent: 25 95% 55%;
+    /* Accent - Vibrant Orange */
+    --accent: 28 100% 55%;
     --accent-foreground: 0 0% 100%;
     
-    --muted: 210 30% 95%;
-    --muted-foreground: 220 20% 40%;
+    --muted: 45 30% 94%;
+    --muted-foreground: 220 15% 40%;
     
-    --destructive: 0 85% 60%;
+    --destructive: 0 90% 55%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 220 20% 88%;
-    --input: 220 20% 88%;
-    --ring: 220 70% 20%;
+    --border: 45 20% 88%;
+    --input: 45 20% 88%;
+    --ring: 28 100% 55%;
     
     --radius: 1rem;
     
-    /* Custom AfriMart Colors */
-    --afrimart-blue: 220 70% 20%;
-    --afrimart-green: 145 65% 40%;
-    --afrimart-orange: 25 95% 55%;
-    --afrimart-gold: 45 90% 55%;
-    --afrimart-earth: 25 30% 30%;
+    /* Custom AfriMart Colors - MORE VIBRANT */
+    --afrimart-blue: 220 80% 25%;
+    --afrimart-green: 150 70% 42%;
+    --afrimart-orange: 28 100% 55%;
+    --afrimart-gold: 42 100% 50%;
+    --afrimart-earth: 25 50% 35%;
     
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -58,53 +58,53 @@
   }
 
   .dark {
-    /* AfriMart African Theme - Dark Mode */
-    --background: 220 50% 8%;
-    --foreground: 210 40% 98%;
+    /* AfriMart African Theme - Dark Mode - VIBRANT */
+    --background: 220 60% 6%;
+    --foreground: 45 30% 95%;
     
-    --card: 220 50% 12%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 55% 10%;
+    --card-foreground: 45 30% 95%;
     
-    --popover: 220 50% 12%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 55% 10%;
+    --popover-foreground: 45 30% 95%;
     
-    /* Primary - Deep Blue Night */
-    --primary: 220 70% 50%;
+    /* Primary - Bright Blue */
+    --primary: 220 85% 55%;
     --primary-foreground: 0 0% 100%;
     
-    /* Secondary - Vibrant Green */
-    --secondary: 145 65% 45%;
+    /* Secondary - Bright Green */
+    --secondary: 150 75% 50%;
     --secondary-foreground: 0 0% 100%;
     
-    /* Accent - Warm Orange */
-    --accent: 25 95% 55%;
+    /* Accent - Bright Orange */
+    --accent: 28 100% 60%;
     --accent-foreground: 0 0% 100%;
     
-    --muted: 220 30% 18%;
-    --muted-foreground: 210 20% 70%;
+    --muted: 220 40% 15%;
+    --muted-foreground: 45 20% 70%;
     
-    --destructive: 0 85% 60%;
+    --destructive: 0 90% 55%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 220 30% 22%;
-    --input: 220 30% 22%;
-    --ring: 220 70% 50%;
+    --border: 220 40% 18%;
+    --input: 220 40% 18%;
+    --ring: 28 100% 60%;
     
-    /* Custom AfriMart Colors - Dark */
-    --afrimart-blue: 220 70% 50%;
-    --afrimart-green: 145 65% 50%;
-    --afrimart-orange: 25 95% 60%;
-    --afrimart-gold: 45 90% 60%;
-    --afrimart-earth: 25 30% 50%;
+    /* Custom AfriMart Colors - Dark VIBRANT */
+    --afrimart-blue: 220 85% 55%;
+    --afrimart-green: 150 75% 50%;
+    --afrimart-orange: 28 100% 60%;
+    --afrimart-gold: 42 100% 55%;
+    --afrimart-earth: 25 50% 50%;
     
-    --sidebar-background: 220 50% 10%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 220 70% 50%;
+    --sidebar-background: 220 55% 8%;
+    --sidebar-foreground: 45 30% 95%;
+    --sidebar-primary: 220 85% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 30% 18%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 220 30% 22%;
-    --sidebar-ring: 220 70% 50%;
+    --sidebar-accent: 220 40% 15%;
+    --sidebar-accent-foreground: 45 30% 95%;
+    --sidebar-border: 220 40% 18%;
+    --sidebar-ring: 220 85% 55%;
   }
 }
 
