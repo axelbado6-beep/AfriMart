@@ -20,10 +20,14 @@ import { useCart } from "@/contexts/CartContext";
 import { ReviewSection } from "@/components/reviews/ReviewSection";
 import StoryCircles from "@/components/stories/StoryCircles";
 import StoryUploadModal from "@/components/media-editor/StoryUploadModal";
+import { cn } from "@/lib/utils";
 import type { Tables } from "@/integrations/supabase/types";
 
 type BusinessProfile = Tables<"business_profiles">;
 type Product = Tables<"products">;
+
+// Placeholder for stories with businesses
+const businessesWithStories: any[] = [];
 
 const BusinessPublicProfile = () => {
   const { businessId } = useParams<{ businessId: string }>();
@@ -183,16 +187,44 @@ const BusinessPublicProfile = () => {
         <div className="container mx-auto px-4">
           <div className="relative -mt-16 mb-4">
             <div className="flex flex-col md:flex-row md:items-end gap-4">
-              <div className="w-32 h-32 rounded-2xl bg-card border-4 border-background shadow-lg overflow-hidden flex-shrink-0">
-                {business.logo_url ? (
-                  <img 
-                    src={business.logo_url} 
-                    alt={business.business_name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-primary/10 flex items-center justify-center">
-                    <Store className="w-12 h-12 text-primary" />
+              {/* Profile with Story Ring */}
+              <div className="relative group">
+                {/* Story ring gradient */}
+                <div className={cn(
+                  "absolute -inset-1 rounded-2xl transition-all duration-500",
+                  businessesWithStories.length > 0 
+                    ? "bg-gradient-to-br from-afrimart-orange via-afrimart-gold to-afrimart-green story-ring-pulse opacity-100" 
+                    : "opacity-0"
+                )} />
+                
+                <div className="relative w-32 h-32 rounded-2xl bg-card border-4 border-background shadow-lg overflow-hidden flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                  {business.logo_url ? (
+                    <img 
+                      src={business.logo_url} 
+                      alt={business.business_name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-afrimart-orange/20 to-afrimart-gold/10 flex items-center justify-center">
+                      <Store className="w-12 h-12 text-afrimart-orange animate-pulse-slow" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Add Story button for owners */}
+                {isOwner && (
+                  <button
+                    onClick={() => setStoryModalOpen(true)}
+                    className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-gradient-to-br from-afrimart-orange to-afrimart-gold flex items-center justify-center text-white shadow-lg border-4 border-background hover:scale-110 active:scale-95 transition-transform z-10"
+                  >
+                    <Plus className="w-5 h-5" />
+                  </button>
+                )}
+
+                {/* Story indicator badge */}
+                {businessesWithStories.length > 0 && (
+                  <div className="absolute -top-1 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-gradient-to-r from-afrimart-orange to-afrimart-gold text-white text-[10px] font-bold rounded-full animate-pulse">
+                    STORY
                   </div>
                 )}
               </div>
@@ -203,21 +235,26 @@ const BusinessPublicProfile = () => {
                     <div className="flex items-center gap-2">
                       <h2 className="text-2xl font-display font-bold">{business.business_name}</h2>
                       {business.is_verified && (
-                        <CheckCircle className="w-5 h-5 text-afrimart-green fill-afrimart-green/20" />
+                        <CheckCircle className="w-5 h-5 text-afrimart-green fill-afrimart-green/20 animate-bounce-in" />
                       )}
                     </div>
                     {business.category && (
-                      <span className="text-sm text-muted-foreground">{business.category}</span>
+                      <span className="inline-flex items-center gap-1 text-sm text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full mt-1">
+                        {business.category}
+                      </span>
                     )}
                   </div>
 
                   <div className="flex gap-2">
                     <Button 
                       variant={isFollowing ? "outline" : "default"}
-                      className={!isFollowing ? "btn-client" : ""}
+                      className={cn(
+                        "transition-all duration-300",
+                        !isFollowing && "btn-client"
+                      )}
                       onClick={() => setIsFollowing(!isFollowing)}
                     >
-                      <Heart className={`w-4 h-4 mr-2 ${isFollowing ? "fill-current" : ""}`} />
+                      <Heart className={cn("w-4 h-4 mr-2 transition-all", isFollowing && "fill-current text-red-500 animate-pulse-heart")} />
                       {isFollowing ? "Abonné" : "S'abonner"}
                     </Button>
                     <Button className="btn-business" onClick={() => handleStartChat()}>
@@ -230,14 +267,14 @@ const BusinessPublicProfile = () => {
             </div>
           </div>
 
-          {/* Stats */}
+          {/* Stats with animations */}
           <div className="flex gap-6 py-4 border-b border-border">
-            <div className="text-center">
-              <p className="text-xl font-bold">{products.length}</p>
+            <div className="text-center group cursor-pointer hover:scale-105 transition-transform">
+              <p className="text-xl font-bold text-foreground group-hover:text-afrimart-orange transition-colors">{products.length}</p>
               <p className="text-sm text-muted-foreground">Produits</p>
             </div>
-            <div className="text-center">
-              <p className="text-xl font-bold">{business.followers_count || 0}</p>
+            <div className="text-center group cursor-pointer hover:scale-105 transition-transform">
+              <p className="text-xl font-bold text-foreground group-hover:text-afrimart-green transition-colors">{business.followers_count || 0}</p>
               <p className="text-sm text-muted-foreground">Abonnés</p>
             </div>
           </div>
