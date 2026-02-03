@@ -1,110 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
-
 @layer base {
   :root {
-    /* AfriMart African Theme - Light Mode - VIBRANT */
-    --background: 45 100% 99%;
-    --foreground: 220 60% 10%;
+    /* Core palette - Vibrant African colors */
+    --background: 40 25% 97%;
+    --foreground: 220 40% 13%;
     
     --card: 0 0% 100%;
-    --card-foreground: 220 60% 10%;
+    --card-foreground: 220 40% 13%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 220 60% 10%;
+    --popover-foreground: 220 40% 13%;
     
-    /* Primary - Rich Deep Blue */
-    --primary: 220 80% 25%;
+    /* Primary - Vibrant AfriMart Orange */
+    --primary: 24 95% 53%;
     --primary-foreground: 0 0% 100%;
     
-    /* Secondary - Lush Green */
-    --secondary: 150 70% 42%;
-    --secondary-foreground: 0 0% 100%;
+    /* Secondary - Rich Golden */
+    --secondary: 45 100% 51%;
+    --secondary-foreground: 220 40% 13%;
     
-    /* Accent - Vibrant Orange */
-    --accent: 28 100% 55%;
+    --muted: 45 20% 92%;
+    --muted-foreground: 220 20% 45%;
+    
+    /* Accent - Vibrant Teal-Green */
+    --accent: 160 84% 39%;
     --accent-foreground: 0 0% 100%;
     
-    --muted: 45 30% 94%;
-    --muted-foreground: 220 15% 40%;
-    
-    --destructive: 0 90% 55%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     
     --border: 45 20% 88%;
     --input: 45 20% 88%;
-    --ring: 28 100% 55%;
+    --ring: 24 95% 53%;
     
     --radius: 1rem;
     
-    /* Custom AfriMart Colors - MORE VIBRANT */
-    --afrimart-blue: 220 80% 25%;
-    --afrimart-green: 150 70% 42%;
-    --afrimart-orange: 28 100% 55%;
-    --afrimart-gold: 42 100% 50%;
-    --afrimart-earth: 25 50% 35%;
+    /* AfriMart vibrant brand colors */
+    --afrimart-orange: 24 95% 53%;
+    --afrimart-gold: 45 100% 51%;
+    --afrimart-green: 160 84% 39%;
+    --afrimart-blue: 217 91% 60%;
+    --afrimart-earth: 25 60% 45%;
+    --afrimart-purple: 270 70% 55%;
+    --afrimart-coral: 16 100% 66%;
+    --afrimart-teal: 174 72% 40%;
     
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 40% 13%;
+    --sidebar-primary: 24 95% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 45 20% 96%;
+    --sidebar-accent-foreground: 220 40% 13%;
+    --sidebar-border: 45 20% 88%;
+    --sidebar-ring: 24 95% 53%;
   }
-
+  
   .dark {
-    /* AfriMart African Theme - Dark Mode - VIBRANT */
-    --background: 220 60% 6%;
-    --foreground: 45 30% 95%;
+    --background: 220 30% 8%;
+    --foreground: 45 20% 96%;
     
-    --card: 220 55% 10%;
-    --card-foreground: 45 30% 95%;
+    --card: 220 25% 12%;
+    --card-foreground: 45 20% 96%;
     
-    --popover: 220 55% 10%;
-    --popover-foreground: 45 30% 95%;
+    --popover: 220 25% 10%;
+    --popover-foreground: 45 20% 96%;
     
-    /* Primary - Bright Blue */
-    --primary: 220 85% 55%;
+    --primary: 24 95% 55%;
     --primary-foreground: 0 0% 100%;
     
-    /* Secondary - Bright Green */
-    --secondary: 150 75% 50%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 45 100% 51%;
+    --secondary-foreground: 220 40% 13%;
     
-    /* Accent - Bright Orange */
-    --accent: 28 100% 60%;
+    --muted: 220 20% 20%;
+    --muted-foreground: 45 20% 65%;
+    
+    --accent: 160 84% 42%;
     --accent-foreground: 0 0% 100%;
     
-    --muted: 220 40% 15%;
-    --muted-foreground: 45 20% 70%;
-    
-    --destructive: 0 90% 55%;
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 220 40% 18%;
-    --input: 220 40% 18%;
-    --ring: 28 100% 60%;
+    --border: 220 20% 22%;
+    --input: 220 20% 22%;
+    --ring: 24 95% 55%;
     
-    /* Custom AfriMart Colors - Dark VIBRANT */
-    --afrimart-blue: 220 85% 55%;
-    --afrimart-green: 150 75% 50%;
-    --afrimart-orange: 28 100% 60%;
-    --afrimart-gold: 42 100% 55%;
-    --afrimart-earth: 25 50% 50%;
+    /* Dark mode AfriMart colors - more vibrant */
+    --afrimart-orange: 24 95% 58%;
+    --afrimart-gold: 45 100% 55%;
+    --afrimart-green: 160 84% 45%;
+    --afrimart-blue: 217 91% 65%;
+    --afrimart-earth: 25 60% 50%;
+    --afrimart-purple: 270 70% 60%;
+    --afrimart-coral: 16 100% 70%;
+    --afrimart-teal: 174 72% 45%;
     
-    --sidebar-background: 220 55% 8%;
-    --sidebar-foreground: 45 30% 95%;
-    --sidebar-primary: 220 85% 55%;
+    /* Sidebar dark */
+    --sidebar-background: 220 25% 10%;
+    --sidebar-foreground: 45 20% 96%;
+    --sidebar-primary: 24 95% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 40% 15%;
-    --sidebar-accent-foreground: 45 30% 95%;
-    --sidebar-border: 220 40% 18%;
-    --sidebar-ring: 220 85% 55%;
+    --sidebar-accent: 220 20% 18%;
+    --sidebar-accent-foreground: 45 20% 96%;
+    --sidebar-border: 220 20% 22%;
+    --sidebar-ring: 24 95% 55%;
   }
 }
 
@@ -112,84 +116,177 @@
   * {
     @apply border-border;
   }
-
   body {
-    @apply bg-background text-foreground antialiased;
-    font-family: 'Poppins', sans-serif;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
-  
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
+    @apply font-display;
   }
 }
 
 @layer components {
-  /* African Pattern Background */
-  .african-pattern {
-    background-image: 
-      radial-gradient(circle at 25% 25%, hsl(var(--afrimart-orange) / 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 75% 75%, hsl(var(--afrimart-green) / 0.1) 0%, transparent 50%);
-  }
-  
-  /* Glovo-style Animated Button Styles */
+  /* Button variants with glow effects */
   .btn-client {
-    @apply relative overflow-hidden transition-all duration-300;
-    background: linear-gradient(135deg, hsl(var(--afrimart-green)), hsl(145 65% 50%));
-  }
-  
-  .btn-client:hover {
-    transform: scale(1.03) translateY(-2px);
-    box-shadow: 0 10px 40px hsl(var(--afrimart-green) / 0.4);
-  }
-  
-  .btn-client:active {
-    transform: scale(0.98);
+    @apply bg-gradient-to-r from-afrimart-green to-emerald-500 text-white font-semibold shadow-lg shadow-afrimart-green/30 hover:shadow-xl hover:shadow-afrimart-green/40 hover:scale-105 active:scale-95 transition-all duration-300;
   }
   
   .btn-business {
-    @apply relative overflow-hidden transition-all duration-300;
-    background: linear-gradient(135deg, hsl(var(--afrimart-orange)), hsl(45 90% 55%));
+    @apply bg-gradient-to-r from-afrimart-orange to-afrimart-gold text-white font-semibold shadow-lg shadow-afrimart-orange/30 hover:shadow-xl hover:shadow-afrimart-orange/40 hover:scale-105 active:scale-95 transition-all duration-300;
+  }
+
+  /* Enhanced card styles */
+  .card-hover {
+    @apply transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:shadow-xl;
+  }
+
+  .card-glow-orange {
+    @apply hover:shadow-lg hover:shadow-afrimart-orange/20 hover:border-afrimart-orange/30;
+  }
+
+  .card-glow-green {
+    @apply hover:shadow-lg hover:shadow-afrimart-green/20 hover:border-afrimart-green/30;
+  }
+
+  /* Interactive elements */
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+  }
+
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-105 active:scale-95;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-lg hover:shadow-primary/25;
+  }
+
+  /* Animated elements */
+  .animate-appear {
+    animation: appear 0.4s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-page {
+    animation: pageEnter 0.5s ease-out forwards;
+  }
+
+  /* Story ring animations */
+  .story-ring {
+    @apply bg-gradient-to-br from-afrimart-orange via-afrimart-gold to-afrimart-green p-0.5 rounded-full;
+    background-size: 200% 200%;
+    animation: gradientRotate 3s linear infinite;
+  }
+
+  .story-ring-pulse {
+    @apply story-ring;
+    animation: gradientRotate 3s linear infinite, pulseRing 2s ease-in-out infinite;
+  }
+
+  /* Glass morphism */
+  .glass {
+    @apply bg-background/80 backdrop-blur-lg border border-border/50;
+  }
+
+  .glass-dark {
+    @apply bg-background/60 backdrop-blur-xl border border-white/10;
+  }
+
+  /* Shimmer effect */
+  .shimmer {
+    @apply relative overflow-hidden;
+  }
+
+  .shimmer::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(var(--primary) / 0.1) 50%,
+      transparent 100%
+    );
+    transform: translateX(-100%);
+    animation: shimmer 2s infinite;
+  }
+
+  /* Stagger animations */
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+
+  /* Scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Confetti animation base */
+  .confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    animation: confettiFall 3s ease-out forwards;
+  }
+
+  /* Ripple effect container */
+  .ripple-container {
+    @apply relative overflow-hidden;
+  }
+
+  .ripple-container .ripple {
+    @apply absolute rounded-full bg-white/30 animate-ripple;
+    pointer-events: none;
+  }
+
+  /* Premium gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-afrimart-orange via-afrimart-gold to-afrimart-green bg-clip-text text-transparent;
+  }
+
+  .gradient-text-animated {
+    @apply gradient-text;
+    background-size: 200% auto;
+    animation: gradientText 3s linear infinite;
+  }
+
+  /* 3D card effect */
+  .card-3d {
+    @apply transition-transform duration-300;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+
+  .card-3d:hover {
+    transform: rotateY(-5deg) rotateX(5deg) translateZ(10px);
+  }
+
+  /* Floating animation variations */
+  .float-slow { animation: float 8s ease-in-out infinite; }
+  .float-medium { animation: float 5s ease-in-out infinite; }
+  .float-fast { animation: float 3s ease-in-out infinite; }
+
+  /* Notification badge */
+  .notification-badge {
+    @apply absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground text-xs rounded-full flex items-center justify-center font-bold animate-bounce-in;
+  }
+
+  /* Live indicator */
+  .live-indicator {
+    @apply flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full;
+  }
+
+  .live-indicator::before {
+    content: '';
+    @apply w-2 h-2 bg-white rounded-full animate-pulse;
   }
   
-  .btn-business:hover {
-    transform: scale(1.03) translateY(-2px);
-    box-shadow: 0 10px 40px hsl(var(--afrimart-orange) / 0.4);
-  }
-  
-  .btn-business:active {
-    transform: scale(0.98);
-  }
-  
-  /* Gradient Text */
-  .text-gradient {
-    background: linear-gradient(135deg, hsl(var(--afrimart-orange)), hsl(var(--afrimart-gold)));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  
-  .text-gradient-green {
-    background: linear-gradient(135deg, hsl(var(--afrimart-green)), hsl(145 65% 60%));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  
-  /* Glovo-style Card Animations */
-  .card-interactive {
-    @apply transition-all duration-300 ease-out;
-  }
-  
-  .card-interactive:hover {
-    transform: scale(1.02) translateY(-4px);
-    box-shadow: 0 20px 40px -15px hsl(var(--primary) / 0.2);
-  }
-  
-  .card-interactive:active {
-    transform: scale(0.98);
-  }
-  
-  /* Glovo-style Product Card */
+  /* Product card */
   .product-card {
     @apply relative overflow-hidden rounded-2xl bg-card border border-border transition-all duration-300;
   }
@@ -208,7 +305,7 @@
     @apply transition-transform duration-500 ease-out;
   }
   
-  /* Glovo-style Category Pills */
+  /* Category pill */
   .category-pill {
     @apply px-4 py-2 rounded-full text-sm font-medium bg-muted transition-all duration-300;
   }
@@ -219,282 +316,222 @@
     box-shadow: 0 4px 15px hsl(var(--primary) / 0.3);
   }
   
-  .category-pill:active {
-    transform: scale(0.95);
-  }
-  
   .category-pill.active {
     @apply bg-primary text-primary-foreground;
     box-shadow: 0 4px 15px hsl(var(--primary) / 0.3);
   }
-  
-  /* Ripple Effect */
-  .ripple-container {
-    @apply relative overflow-hidden;
-  }
-  
-  .ripple-effect {
-    position: absolute;
-    border-radius: 50%;
-    background: hsl(var(--primary-foreground) / 0.3);
-    transform: scale(0);
-    animation: ripple 0.6s linear;
-    pointer-events: none;
-  }
-  
-  @keyframes ripple {
-    to {
-      transform: scale(4);
-      opacity: 0;
-    }
-  }
-  
-  /* Floating Label Input */
-  .input-floating {
-    @apply relative;
-  }
-  
-  .input-floating input:focus ~ label,
-  .input-floating input:not(:placeholder-shown) ~ label {
-    @apply -translate-y-6 scale-75 text-primary;
-  }
-  
-  /* Glovo-style Loading Skeleton */
-  .skeleton-glow {
-    background: linear-gradient(
-      90deg,
-      hsl(var(--muted)) 0%,
-      hsl(var(--muted-foreground) / 0.1) 50%,
-      hsl(var(--muted)) 100%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-  }
-  
-  /* Glovo-style Bottom Sheet */
-  .bottom-sheet {
-    @apply fixed inset-x-0 bottom-0 z-50 bg-card rounded-t-3xl shadow-2xl;
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-  }
-  
-  .bottom-sheet.open {
-    transform: translateY(0);
-  }
-  
-  /* Badge with pulse */
-  .badge-pulse {
-    @apply relative;
-  }
-  
-  .badge-pulse::after {
-    content: '';
-    @apply absolute inset-0 rounded-full bg-current opacity-75;
-    animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-  }
-  
-  @keyframes ping-slow {
-    75%, 100% {
-      transform: scale(1.5);
-      opacity: 0;
-    }
-  }
 }
 
 @layer utilities {
-  /* Stagger animation delays */
-  .stagger-1 { animation-delay: 50ms; }
-  .stagger-2 { animation-delay: 100ms; }
-  .stagger-3 { animation-delay: 150ms; }
-  .stagger-4 { animation-delay: 200ms; }
-  .stagger-5 { animation-delay: 250ms; }
-  .stagger-6 { animation-delay: 300ms; }
-  .stagger-7 { animation-delay: 350ms; }
-  .stagger-8 { animation-delay: 400ms; }
-  
-  /* Page animation wrapper */
-  .animate-page {
-    animation: fadeUp 0.4s ease-out forwards;
+  /* Hide scrollbar but allow scrolling */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
-  
-  @keyframes fadeUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
-  
-  /* Glovo-style Hover Effects */
-  .hover-scale {
-    @apply transition-transform duration-300;
-  }
-  .hover-scale:hover {
-    transform: scale(1.05);
-  }
-  .hover-scale:active {
-    transform: scale(0.98);
-  }
-  
-  .hover-lift {
-    @apply transition-all duration-300;
-  }
-  .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px -8px hsl(var(--primary) / 0.15);
-  }
-  
-  .hover-glow {
-    @apply transition-all duration-300;
-  }
-  .hover-glow:hover {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
-  }
-  
-  .hover-rotate {
-    @apply transition-transform duration-300;
-  }
-  .hover-rotate:hover {
-    transform: rotate(10deg);
-  }
-  
-  .hover-zoom-image [class*="image"],
-  .hover-zoom-image img {
-    @apply transition-transform duration-500;
-  }
-  .hover-zoom-image:hover [class*="image"],
-  .hover-zoom-image:hover img {
-    transform: scale(1.1);
-  }
-  
-  /* Shimmer effect for loading */
-  .shimmer {
-    background: linear-gradient(
-      90deg,
-      hsl(var(--muted)) 0%,
-      hsl(var(--muted-foreground) / 0.1) 50%,
-      hsl(var(--muted)) 100%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-  }
-  
-  @keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-  
-  /* Pulse notification badge */
-  .pulse-badge {
-    animation: pulseBadge 2s ease-in-out infinite;
-  }
-  
-  @keyframes pulseBadge {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.1); opacity: 0.9; }
-  }
-  
-  /* Appear animation for lists */
-  .animate-appear {
+}
+
+/* Custom Keyframes */
+@keyframes appear {
+  from {
     opacity: 0;
-    animation: appear 0.4s ease-out forwards;
+    transform: translateY(20px) scale(0.95);
   }
-  
-  @keyframes appear {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
-  
-  /* Glovo-style Press effect */
-  .press-effect {
-    @apply transition-transform duration-150;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  .press-effect:active {
-    transform: scale(0.95);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  /* Glovo-style Border glow on focus */
-  .focus-glow:focus {
-    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.3);
+}
+
+@keyframes gradientRotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pulseRing {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes confettiFall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
   }
-  
-  /* Gradient border */
-  .gradient-border {
-    @apply relative;
+  100% {
+    opacity: 0;
+    transform: translateY(100vh) rotate(720deg);
   }
-  .gradient-border::before {
-    content: '';
-    @apply absolute inset-0 rounded-inherit;
-    padding: 2px;
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
-    -webkit-mask: 
-      linear-gradient(#fff 0 0) content-box, 
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
+}
+
+@keyframes gradientText {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+/* Logo drawing animation */
+@keyframes logoStroke {
+  0% { stroke-dashoffset: 1000; }
+  100% { stroke-dashoffset: 0; }
+}
+
+.logo-draw {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: logoStroke 2s ease-out forwards;
+}
+
+/* Typewriter animation */
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes cursorBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.typewriter-text {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typewriter 2s steps(30) forwards;
+}
+
+.cursor-blink::after {
+  content: '|';
+  animation: cursorBlink 1s infinite;
+}
+
+/* Particle explosion */
+@keyframes particleExplode {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
   }
-  
-  /* Text animations */
-  .text-reveal {
-    @apply transition-all duration-300;
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0);
+    opacity: 0;
   }
-  .text-reveal:hover {
-    letter-spacing: 0.05em;
-  }
-  
-  /* Icon bounce on hover */
-  .icon-bounce:hover {
-    animation: bounce-icon 0.5s ease-in-out;
-  }
-  
-  @keyframes bounce-icon {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-  }
-  
-  /* Smooth number counter animation */
-  .animate-number {
-    animation: countUp 1s ease-out forwards;
-  }
-  
-  /* Glass effect */
-  .glass {
-    @apply bg-white/10 backdrop-blur-md border border-white/20;
-  }
-  
-  .glass-dark {
-    @apply bg-black/20 backdrop-blur-md border border-white/10;
-  }
-  
-  /* Neon glow effect */
-  .neon-glow {
-    box-shadow: 
-      0 0 5px hsl(var(--primary)),
-      0 0 10px hsl(var(--primary)),
-      0 0 20px hsl(var(--primary) / 0.5);
-  }
-  
-  /* Floating animation */
-  .floating {
-    animation: float 6s ease-in-out infinite;
-  }
-  
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-  
-  /* Morphing shape */
-  .morph-shape {
-    animation: morph 8s ease-in-out infinite;
-  }
-  
-  @keyframes morph {
-    0% { border-radius: 60% 40% 30% 70%/60% 30% 70% 40%; }
-    50% { border-radius: 30% 60% 70% 40%/50% 60% 30% 60%; }
-    100% { border-radius: 60% 40% 30% 70%/60% 30% 70% 40%; }
-  }
+}
+
+.particle {
+  animation: particleExplode 0.6s ease-out forwards;
+}
+
+/* Counter animation */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.count-up {
+  animation: countUp 0.5s ease-out forwards;
+}
+
+/* Badge unlock animation */
+@keyframes badgeUnlock {
+  0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+  50% { transform: scale(1.2) rotate(10deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.badge-unlock {
+  animation: badgeUnlock 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Glow pulse */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px hsl(var(--primary) / 0.3); }
+  50% { box-shadow: 0 0 40px hsl(var(--primary) / 0.6); }
+}
+
+.glow-pulse {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* Shake animation for notifications */
+@keyframes bellShake {
+  0%, 100% { transform: rotate(0); }
+  10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); }
+  20%, 40%, 60%, 80% { transform: rotate(10deg); }
+}
+
+.bell-shake {
+  animation: bellShake 0.5s ease-in-out;
+}
+
+/* African pattern overlay */
+.african-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23F97316' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Vibrant category backgrounds */
+.category-mode { background: linear-gradient(135deg, hsl(350 80% 60% / 0.1), hsl(320 80% 60% / 0.1)); }
+.category-electronics { background: linear-gradient(135deg, hsl(220 80% 60% / 0.1), hsl(260 80% 60% / 0.1)); }
+.category-food { background: linear-gradient(135deg, hsl(30 80% 60% / 0.1), hsl(50 80% 60% / 0.1)); }
+.category-beauty { background: linear-gradient(135deg, hsl(280 80% 60% / 0.1), hsl(320 80% 60% / 0.1)); }
+.category-home { background: linear-gradient(135deg, hsl(160 80% 40% / 0.1), hsl(140 80% 50% / 0.1)); }
+.category-sports { background: linear-gradient(135deg, hsl(15 80% 55% / 0.1), hsl(30 80% 60% / 0.1)); }
+.category-art { background: linear-gradient(135deg, hsl(180 70% 45% / 0.1), hsl(200 70% 50% / 0.1)); }
+.category-services { background: linear-gradient(135deg, hsl(210 30% 50% / 0.1), hsl(220 30% 60% / 0.1)); }
+
+/* Float animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Morph shape */
+@keyframes morph {
+  0% { border-radius: 60% 40% 30% 70%/60% 30% 70% 40%; }
+  50% { border-radius: 30% 60% 70% 40%/50% 60% 30% 60%; }
+  100% { border-radius: 60% 40% 30% 70%/60% 30% 70% 40%; }
+}
+
+.morph-shape {
+  animation: morph 8s ease-in-out infinite;
+}
+
+/* Neon glow */
+.neon-glow {
+  box-shadow: 
+    0 0 5px hsl(var(--primary)),
+    0 0 10px hsl(var(--primary)),
+    0 0 20px hsl(var(--primary) / 0.5);
+}
+
+/* Glass effect */
+.glass-effect {
+  @apply bg-white/10 backdrop-blur-md border border-white/20;
+}
+
+/* Press effect */
+.press-effect {
+  @apply transition-transform duration-150;
+}
+.press-effect:active {
+  transform: scale(0.95);
 }

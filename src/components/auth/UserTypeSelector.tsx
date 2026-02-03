@@ -1,124 +1,259 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Building2, ShoppingBag, Star, TrendingUp, Users, Sparkles, ArrowRight } from "lucide-react";
+import { 
+  ShoppingBag, 
+  Store, 
+  ArrowRight, 
+  Sparkles, 
+  Users, 
+  TrendingUp, 
+  Star,
+  Heart,
+  Zap,
+  Crown,
+  Gift
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 import afrimartLogo from "@/assets/afrimart-logo.jpg";
 
 interface UserTypeSelectorProps {
   onSelect: (type: "client" | "business") => void;
 }
 
-export const UserTypeSelector = ({ onSelect }: UserTypeSelectorProps) => {
+const floatingEmojis = ["🌍", "✨", "🎉", "💫", "⭐", "🔥", "💎", "🌟"];
+
+const UserTypeSelector = ({ onSelect }: UserTypeSelectorProps) => {
   const navigate = useNavigate();
+  const [selectedType, setSelectedType] = useState<"client" | "business" | null>(null);
+  const [hoveredType, setHoveredType] = useState<"client" | "business" | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const handleSelect = (type: "client" | "business") => {
+    setSelectedType(type);
+    setIsAnimating(true);
+    
+    // Trigger haptic-like visual feedback
+    setTimeout(() => {
+      onSelect(type);
+    }, 600);
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary via-primary to-afrimart-blue relative overflow-hidden flex flex-col items-center justify-center p-6">
+    <div className="relative min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden bg-gradient-to-br from-primary via-primary to-afrimart-blue">
       {/* Animated Background */}
-      <div className="absolute inset-0">
-        <div className="absolute top-10 left-10 w-72 h-72 bg-afrimart-orange/20 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-afrimart-green/15 rounded-full blur-3xl animate-pulse-slow stagger-3" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-afrimart-gold/10 rounded-full blur-3xl animate-morph" />
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Gradient circles */}
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-gradient-to-br from-afrimart-orange/20 to-afrimart-gold/10 rounded-full blur-3xl animate-pulse-slow" />
+        <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-gradient-to-br from-afrimart-green/20 to-emerald-400/10 rounded-full blur-3xl animate-pulse-slow stagger-2" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-afrimart-gold/10 to-afrimart-orange/10 rounded-full blur-3xl animate-morph" />
         
-        {/* Floating decorative elements */}
-        <div className="absolute top-20 right-20 text-4xl animate-float opacity-30">🌍</div>
-        <div className="absolute bottom-32 left-16 text-3xl animate-float stagger-2 opacity-30">✨</div>
-        <div className="absolute top-1/3 left-10 text-2xl animate-bounce-soft opacity-30">🛍️</div>
-        <div className="absolute bottom-20 right-1/4 text-3xl animate-float stagger-4 opacity-30">🚀</div>
+        {/* Floating emojis */}
+        {floatingEmojis.map((emoji, i) => (
+          <span
+            key={i}
+            className="absolute text-2xl opacity-30 animate-float"
+            style={{
+              left: `${10 + (i * 12)}%`,
+              top: `${20 + (i % 3) * 25}%`,
+              animationDelay: `${i * 0.3}s`,
+              animationDuration: `${4 + i}s`,
+            }}
+          >
+            {emoji}
+          </span>
+        ))}
       </div>
 
       {/* Logo */}
-      <div className="relative z-10 mb-10 flex flex-col items-center animate-fade-in-down">
-        <div className="relative group cursor-pointer" onClick={() => navigate("/")}>
-          <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-afrimart-orange to-afrimart-gold opacity-0 group-hover:opacity-50 blur-lg transition-opacity duration-500" />
-          <img 
-            src={afrimartLogo} 
-            alt="AfriMart" 
-            className="w-20 h-20 rounded-full object-cover shadow-2xl group-hover:scale-110 transition-transform duration-300"
-          />
+      <div className="relative mb-8 animate-bounce-in z-10">
+        <div 
+          className="w-20 h-20 rounded-2xl overflow-hidden shadow-2xl shadow-afrimart-orange/30 ring-4 ring-white/50 cursor-pointer hover:scale-110 transition-transform"
+          onClick={() => navigate("/")}
+        >
+          <img src={afrimartLogo} alt="AfriMart" className="w-full h-full object-cover" />
         </div>
-        <h1 className="mt-4 text-3xl font-display font-bold text-primary-foreground">
-          Bienvenue sur Afri<span className="text-gradient">Mart</span>
+        <Sparkles className="absolute -top-2 -right-2 w-6 h-6 text-afrimart-gold animate-pulse" />
+      </div>
+
+      {/* Title */}
+      <div className="relative text-center mb-10 z-10 animate-fade-in">
+        <h1 className="text-3xl md:text-4xl font-display font-bold mb-3 text-primary-foreground">
+          Bienvenue sur <span className="text-gradient">AfriMart</span>
         </h1>
-        <p className="text-primary-foreground/70 mt-2 text-center">
-          Choisissez votre espace pour continuer
+        <p className="text-primary-foreground/70 text-lg">
+          Comment souhaitez-vous nous rejoindre ?
         </p>
       </div>
 
       {/* Selection Cards */}
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
+      <div className="relative z-10 flex flex-col md:flex-row gap-6 w-full max-w-3xl">
         {/* Client Card */}
         <button
-          onClick={() => onSelect("client")}
-          className="group relative bg-gradient-to-br from-afrimart-green/20 to-afrimart-green/5 backdrop-blur-xl border-2 border-afrimart-green/30 rounded-3xl p-8 text-left transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:border-afrimart-green hover:shadow-2xl hover:shadow-afrimart-green/30 active:scale-95"
+          onClick={() => handleSelect("client")}
+          onMouseEnter={() => setHoveredType("client")}
+          onMouseLeave={() => setHoveredType(null)}
+          disabled={isAnimating}
+          className={cn(
+            "group relative flex-1 p-8 rounded-3xl border-2 transition-all duration-500 backdrop-blur-xl text-left",
+            "bg-gradient-to-br from-afrimart-green/20 via-emerald-500/10 to-teal-500/5",
+            "hover:from-afrimart-green/30 hover:via-emerald-500/20 hover:to-teal-500/15",
+            "hover:border-afrimart-green hover:shadow-2xl hover:shadow-afrimart-green/30",
+            "hover:-translate-y-3 hover:scale-[1.02]",
+            "active:scale-95 active:translate-y-0",
+            selectedType === "client" && "border-afrimart-green shadow-2xl shadow-afrimart-green/40 scale-[1.02] -translate-y-3",
+            selectedType === "business" && "opacity-50 scale-95",
+            !selectedType && "border-afrimart-green/30",
+            "animate-fade-in-left"
+          )}
         >
-          {/* Glow Effect */}
-          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-afrimart-green/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          {/* Glow effect */}
+          <div className={cn(
+            "absolute inset-0 rounded-3xl bg-gradient-to-br from-afrimart-green/20 to-emerald-400/20 opacity-0 blur-xl transition-opacity duration-500 -z-10",
+            hoveredType === "client" && "opacity-100"
+          )} />
           
-          {/* Icon Container */}
+          {/* Icon container */}
           <div className="relative mb-6">
-            <div className="w-20 h-20 rounded-2xl bg-afrimart-green/20 flex items-center justify-center group-hover:animate-jelly">
-              <User className="w-10 h-10 text-afrimart-green group-hover:scale-110 transition-transform" />
+            <div className={cn(
+              "w-20 h-20 rounded-2xl bg-afrimart-green/20 flex items-center justify-center",
+              "transition-all duration-500 group-hover:scale-110 group-hover:rotate-3",
+              selectedType === "client" && "animate-jelly"
+            )}>
+              <ShoppingBag className="w-10 h-10 text-afrimart-green" />
             </div>
-            <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-afrimart-green flex items-center justify-center animate-bounce-soft">
-              <ShoppingBag className="w-4 h-4 text-primary-foreground" />
+            
+            {/* Floating badges */}
+            <div className={cn(
+              "absolute -top-2 -right-2 transition-all duration-500",
+              "opacity-0 group-hover:opacity-100 group-hover:scale-100 scale-0"
+            )}>
+              <Heart className="w-6 h-6 text-red-400 animate-pulse-heart" />
+            </div>
+            <div className={cn(
+              "absolute -bottom-1 -left-1 transition-all duration-500 delay-100",
+              "opacity-0 group-hover:opacity-100 group-hover:scale-100 scale-0"
+            )}>
+              <Star className="w-5 h-5 text-afrimart-gold animate-bounce-soft" />
             </div>
           </div>
 
-          {/* Content */}
-          <h2 className="text-2xl font-display font-bold text-primary-foreground mb-2 group-hover:text-afrimart-green transition-colors">
+          <h3 className="text-2xl font-display font-bold mb-3 text-primary-foreground group-hover:text-afrimart-green transition-colors">
             Espace Client
-          </h2>
-          <p className="text-primary-foreground/70 mb-6">
-            Découvrez des produits africains authentiques et soutenez les entreprises locales
+          </h3>
+          <p className="text-primary-foreground/70 mb-6 leading-relaxed">
+            Découvrez des produits uniques et soutenez les entrepreneurs africains
           </p>
 
           {/* Features */}
-          <div className="space-y-3">
-            <Feature icon={Star} text="Découvrir les meilleures entreprises" color="afrimart-green" />
-            <Feature icon={ShoppingBag} text="Commander en toute simplicité" color="afrimart-green" />
-            <Feature icon={Sparkles} text="Profiter d'offres exclusives" color="afrimart-green" />
+          <div className="space-y-3 mb-6">
+            {[
+              { icon: Gift, text: "Produits exclusifs" },
+              { icon: Users, text: "Vendeurs vérifiés" },
+              { icon: Zap, text: "Livraison rapide" },
+            ].map(({ icon: Icon, text }) => (
+              <div key={text} className="flex items-center gap-3 text-sm">
+                <div className="w-8 h-8 rounded-lg bg-afrimart-green/20 flex items-center justify-center group-hover:bg-afrimart-green/30 transition-colors">
+                  <Icon className="w-4 h-4 text-afrimart-green" />
+                </div>
+                <span className="text-primary-foreground/80 group-hover:text-primary-foreground transition-colors">
+                  {text}
+                </span>
+              </div>
+            ))}
           </div>
 
           {/* CTA */}
-          <div className="mt-6 flex items-center gap-2 text-afrimart-green font-semibold opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-2 transition-all">
-            Continuer <ArrowRight className="w-4 h-4 animate-bounce-soft" style={{ animationDirection: "alternate" }} />
+          <div className={cn(
+            "flex items-center gap-2 text-afrimart-green font-semibold",
+            "opacity-0 group-hover:opacity-100 translate-x-0 group-hover:translate-x-2 transition-all"
+          )}>
+            <span>Continuer</span>
+            <ArrowRight className="w-5 h-5 animate-bounce-soft" style={{ animationDirection: "alternate" }} />
           </div>
         </button>
 
         {/* Business Card */}
         <button
-          onClick={() => onSelect("business")}
-          className="group relative bg-gradient-to-br from-afrimart-orange/20 to-afrimart-orange/5 backdrop-blur-xl border-2 border-afrimart-orange/30 rounded-3xl p-8 text-left transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:border-afrimart-orange hover:shadow-2xl hover:shadow-afrimart-orange/30 active:scale-95"
+          onClick={() => handleSelect("business")}
+          onMouseEnter={() => setHoveredType("business")}
+          onMouseLeave={() => setHoveredType(null)}
+          disabled={isAnimating}
+          className={cn(
+            "group relative flex-1 p-8 rounded-3xl border-2 transition-all duration-500 backdrop-blur-xl text-left",
+            "bg-gradient-to-br from-afrimart-orange/20 via-afrimart-gold/10 to-amber-500/5",
+            "hover:from-afrimart-orange/30 hover:via-afrimart-gold/20 hover:to-amber-500/15",
+            "hover:border-afrimart-orange hover:shadow-2xl hover:shadow-afrimart-orange/30",
+            "hover:-translate-y-3 hover:scale-[1.02]",
+            "active:scale-95 active:translate-y-0",
+            selectedType === "business" && "border-afrimart-orange shadow-2xl shadow-afrimart-orange/40 scale-[1.02] -translate-y-3",
+            selectedType === "client" && "opacity-50 scale-95",
+            !selectedType && "border-afrimart-orange/30",
+            "animate-fade-in-right"
+          )}
         >
-          {/* Glow Effect */}
-          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-afrimart-orange/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          {/* Glow effect */}
+          <div className={cn(
+            "absolute inset-0 rounded-3xl bg-gradient-to-br from-afrimart-orange/20 to-afrimart-gold/20 opacity-0 blur-xl transition-opacity duration-500 -z-10",
+            hoveredType === "business" && "opacity-100"
+          )} />
           
-          {/* Icon Container */}
+          {/* Icon container */}
           <div className="relative mb-6">
-            <div className="w-20 h-20 rounded-2xl bg-afrimart-orange/20 flex items-center justify-center group-hover:animate-jelly">
-              <Building2 className="w-10 h-10 text-afrimart-orange group-hover:scale-110 transition-transform" />
+            <div className={cn(
+              "w-20 h-20 rounded-2xl bg-afrimart-orange/20 flex items-center justify-center",
+              "transition-all duration-500 group-hover:scale-110 group-hover:-rotate-3",
+              selectedType === "business" && "animate-jelly"
+            )}>
+              <Store className="w-10 h-10 text-afrimart-orange" />
             </div>
-            <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-afrimart-orange flex items-center justify-center animate-bounce-soft stagger-2">
-              <TrendingUp className="w-4 h-4 text-primary-foreground" />
+            
+            {/* Floating badges */}
+            <div className={cn(
+              "absolute -top-2 -left-2 transition-all duration-500",
+              "opacity-0 group-hover:opacity-100 group-hover:scale-100 scale-0"
+            )}>
+              <Crown className="w-6 h-6 text-afrimart-gold animate-bounce-soft" />
+            </div>
+            <div className={cn(
+              "absolute -bottom-1 -right-1 transition-all duration-500 delay-100",
+              "opacity-0 group-hover:opacity-100 group-hover:scale-100 scale-0"
+            )}>
+              <Sparkles className="w-5 h-5 text-afrimart-orange animate-pulse" />
             </div>
           </div>
 
-          {/* Content */}
-          <h2 className="text-2xl font-display font-bold text-primary-foreground mb-2 group-hover:text-afrimart-orange transition-colors">
+          <h3 className="text-2xl font-display font-bold mb-3 text-primary-foreground group-hover:text-afrimart-orange transition-colors">
             Espace Entreprise
-          </h2>
-          <p className="text-primary-foreground/70 mb-6">
-            Vendez vos produits à des milliers de clients et développez votre activité
+          </h3>
+          <p className="text-primary-foreground/70 mb-6 leading-relaxed">
+            Développez votre activité et atteignez des milliers de clients
           </p>
 
           {/* Features */}
-          <div className="space-y-3">
-            <Feature icon={TrendingUp} text="Augmenter vos ventes" color="afrimart-orange" />
-            <Feature icon={Users} text="Atteindre de nouveaux clients" color="afrimart-orange" />
-            <Feature icon={Star} text="Obtenir des avis et visibilité" color="afrimart-orange" />
+          <div className="space-y-3 mb-6">
+            {[
+              { icon: TrendingUp, text: "Visibilité maximale" },
+              { icon: Store, text: "Boutique en ligne" },
+              { icon: Sparkles, text: "Outils marketing" },
+            ].map(({ icon: Icon, text }) => (
+              <div key={text} className="flex items-center gap-3 text-sm">
+                <div className="w-8 h-8 rounded-lg bg-afrimart-orange/20 flex items-center justify-center group-hover:bg-afrimart-orange/30 transition-colors">
+                  <Icon className="w-4 h-4 text-afrimart-orange" />
+                </div>
+                <span className="text-primary-foreground/80 group-hover:text-primary-foreground transition-colors">
+                  {text}
+                </span>
+              </div>
+            ))}
           </div>
 
           {/* CTA */}
-          <div className="mt-6 flex items-center gap-2 text-afrimart-orange font-semibold opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-2 transition-all">
-            Continuer <ArrowRight className="w-4 h-4 animate-bounce-soft" style={{ animationDirection: "alternate" }} />
+          <div className={cn(
+            "flex items-center gap-2 text-afrimart-orange font-semibold",
+            "opacity-0 group-hover:opacity-100 translate-x-0 group-hover:translate-x-2 transition-all"
+          )}>
+            <span>Créer ma boutique</span>
+            <ArrowRight className="w-5 h-5 animate-bounce-soft" style={{ animationDirection: "alternate" }} />
           </div>
         </button>
       </div>
@@ -126,29 +261,17 @@ export const UserTypeSelector = ({ onSelect }: UserTypeSelectorProps) => {
       {/* Back to Home Link */}
       <button
         onClick={() => navigate("/")}
-        className="relative z-10 mt-8 text-primary-foreground/60 hover:text-primary-foreground transition-colors flex items-center gap-2 group"
+        className="relative z-10 mt-10 text-primary-foreground/60 hover:text-primary-foreground transition-colors flex items-center gap-2 animate-fade-in stagger-5"
       >
         <span>← Retour à l'accueil</span>
       </button>
+
+      {/* Bottom tagline */}
+      <p className="relative z-10 mt-4 text-sm text-primary-foreground/50 text-center animate-fade-in stagger-5">
+        🌍 La marketplace qui célèbre l'Afrique
+      </p>
     </div>
   );
 };
-
-const Feature = ({ 
-  icon: Icon, 
-  text, 
-  color 
-}: { 
-  icon: any; 
-  text: string; 
-  color: string;
-}) => (
-  <div className="flex items-center gap-3 text-primary-foreground/80">
-    <div className={`w-6 h-6 rounded-lg bg-${color}/20 flex items-center justify-center flex-shrink-0`}>
-      <Icon className={`w-3.5 h-3.5 text-${color}`} />
-    </div>
-    <span className="text-sm">{text}</span>
-  </div>
-);
 
 export default UserTypeSelector;
