@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { ShoppingBag, Mail, Lock, User, Building2, ArrowLeft, Eye, EyeOff, Phone, Sparkles } from "lucide-react";
+import { Mail, Lock, User, Building2, ArrowLeft, Eye, EyeOff, Phone, Sparkles } from "lucide-react";
 import { z } from "zod";
 import UserTypeSelector from "@/components/auth/UserTypeSelector";
+import OAuthButtons from "@/components/auth/OAuthButtons";
 import afrimartLogo from "@/assets/afrimart-logo.jpg";
 
 const emailSchema = z.string().email("Email invalide");
@@ -250,7 +251,10 @@ const Auth = () => {
             }
           </p>
 
-          {/* Form */}
+          {/* OAuth Buttons */}
+          <OAuthButtons userType={userType} />
+
+          {/* Email Form */}
           <form onSubmit={handleAuth} className="space-y-5">
             {!isLogin && (
               <>
