@@ -6,109 +6,103 @@
 
 @layer base {
   :root {
-    /* Core palette - Vibrant African colors */
-    --background: 40 25% 97%;
-    --foreground: 220 40% 13%;
+    /* Core palette - Professional Blue/White */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
     
     --card: 0 0% 100%;
-    --card-foreground: 220 40% 13%;
+    --card-foreground: 222 47% 11%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 220 40% 13%;
+    --popover-foreground: 222 47% 11%;
     
-    /* Primary - Vibrant AfriMart Orange */
-    --primary: 24 95% 53%;
+    /* Primary - Deep Blue */
+    --primary: 224 76% 40%;
     --primary-foreground: 0 0% 100%;
     
-    /* Secondary - Rich Golden */
-    --secondary: 45 100% 51%;
-    --secondary-foreground: 220 40% 13%;
+    /* Secondary - Light Blue */
+    --secondary: 217 91% 60%;
+    --secondary-foreground: 0 0% 100%;
     
-    --muted: 45 20% 92%;
-    --muted-foreground: 220 20% 45%;
+    --muted: 210 40% 94%;
+    --muted-foreground: 215 16% 47%;
     
-    /* Accent - Vibrant Teal-Green */
-    --accent: 160 84% 39%;
+    /* Accent - Indigo */
+    --accent: 239 84% 67%;
     --accent-foreground: 0 0% 100%;
     
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 45 20% 88%;
-    --input: 45 20% 88%;
-    --ring: 24 95% 53%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 224 76% 40%;
     
     --radius: 1rem;
     
-    /* AfriMart vibrant brand colors */
-    --afrimart-orange: 24 95% 53%;
-    --afrimart-gold: 45 100% 51%;
-    --afrimart-green: 160 84% 39%;
-    --afrimart-blue: 217 91% 60%;
-    --afrimart-earth: 25 60% 45%;
-    --afrimart-purple: 270 70% 55%;
-    --afrimart-coral: 16 100% 66%;
-    --afrimart-teal: 174 72% 40%;
+    /* AfriMart brand colors - Blue palette */
+    --afrimart-orange: 224 76% 48%;
+    --afrimart-gold: 217 91% 60%;
+    --afrimart-green: 239 84% 67%;
+    --afrimart-blue: 224 76% 40%;
+    --afrimart-earth: 215 25% 27%;
     
     /* Sidebar */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 40% 13%;
-    --sidebar-primary: 24 95% 53%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 224 76% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 45 20% 96%;
-    --sidebar-accent-foreground: 220 40% 13%;
-    --sidebar-border: 45 20% 88%;
-    --sidebar-ring: 24 95% 53%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 224 76% 40%;
   }
   
   .dark {
-    --background: 220 30% 8%;
-    --foreground: 45 20% 96%;
+    --background: 222 47% 6%;
+    --foreground: 210 40% 96%;
     
-    --card: 220 25% 12%;
-    --card-foreground: 45 20% 96%;
+    --card: 222 47% 10%;
+    --card-foreground: 210 40% 96%;
     
-    --popover: 220 25% 10%;
-    --popover-foreground: 45 20% 96%;
+    --popover: 222 47% 8%;
+    --popover-foreground: 210 40% 96%;
     
-    --primary: 24 95% 55%;
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 45 100% 51%;
-    --secondary-foreground: 220 40% 13%;
+    --secondary: 239 84% 67%;
+    --secondary-foreground: 0 0% 100%;
     
-    --muted: 220 20% 20%;
-    --muted-foreground: 45 20% 65%;
+    --muted: 222 30% 18%;
+    --muted-foreground: 215 20% 60%;
     
-    --accent: 160 84% 42%;
+    --accent: 239 84% 70%;
     --accent-foreground: 0 0% 100%;
     
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 220 20% 22%;
-    --input: 220 20% 22%;
-    --ring: 24 95% 55%;
+    --border: 222 30% 20%;
+    --input: 222 30% 20%;
+    --ring: 217 91% 60%;
     
-    /* Dark mode AfriMart colors - more vibrant */
-    --afrimart-orange: 24 95% 58%;
-    --afrimart-gold: 45 100% 55%;
-    --afrimart-green: 160 84% 45%;
+    /* Dark mode brand colors */
+    --afrimart-orange: 224 76% 52%;
+    --afrimart-gold: 217 91% 65%;
+    --afrimart-green: 239 84% 72%;
     --afrimart-blue: 217 91% 65%;
-    --afrimart-earth: 25 60% 50%;
-    --afrimart-purple: 270 70% 60%;
-    --afrimart-coral: 16 100% 70%;
-    --afrimart-teal: 174 72% 45%;
+    --afrimart-earth: 215 25% 35%;
     
     /* Sidebar dark */
-    --sidebar-background: 220 25% 10%;
-    --sidebar-foreground: 45 20% 96%;
-    --sidebar-primary: 24 95% 55%;
+    --sidebar-background: 222 47% 8%;
+    --sidebar-foreground: 210 40% 96%;
+    --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 20% 18%;
-    --sidebar-accent-foreground: 45 20% 96%;
-    --sidebar-border: 220 20% 22%;
-    --sidebar-ring: 24 95% 55%;
+    --sidebar-accent: 222 30% 16%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 222 30% 20%;
+    --sidebar-ring: 217 91% 60%;
   }
 }
 
@@ -126,13 +120,13 @@
 }
 
 @layer components {
-  /* Button variants with glow effects */
+  /* Button variants */
   .btn-client {
-    @apply bg-gradient-to-r from-afrimart-green to-emerald-500 text-white font-semibold shadow-lg shadow-afrimart-green/30 hover:shadow-xl hover:shadow-afrimart-green/40 hover:scale-105 active:scale-95 transition-all duration-300;
+    @apply bg-gradient-to-r from-primary to-secondary text-white font-semibold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:scale-105 active:scale-95 transition-all duration-300;
   }
   
   .btn-business {
-    @apply bg-gradient-to-r from-afrimart-orange to-afrimart-gold text-white font-semibold shadow-lg shadow-afrimart-orange/30 hover:shadow-xl hover:shadow-afrimart-orange/40 hover:scale-105 active:scale-95 transition-all duration-300;
+    @apply bg-gradient-to-r from-accent to-secondary text-white font-semibold shadow-lg shadow-accent/30 hover:shadow-xl hover:shadow-accent/40 hover:scale-105 active:scale-95 transition-all duration-300;
   }
 
   /* Enhanced card styles */
@@ -141,11 +135,11 @@
   }
 
   .card-glow-orange {
-    @apply hover:shadow-lg hover:shadow-afrimart-orange/20 hover:border-afrimart-orange/30;
+    @apply hover:shadow-lg hover:shadow-primary/20 hover:border-primary/30;
   }
 
   .card-glow-green {
-    @apply hover:shadow-lg hover:shadow-afrimart-green/20 hover:border-afrimart-green/30;
+    @apply hover:shadow-lg hover:shadow-accent/20 hover:border-accent/30;
   }
 
   /* Interactive elements */
@@ -173,7 +167,7 @@
 
   /* Story ring animations */
   .story-ring {
-    @apply bg-gradient-to-br from-afrimart-orange via-afrimart-gold to-afrimart-green p-0.5 rounded-full;
+    @apply bg-gradient-to-br from-primary via-secondary to-accent p-0.5 rounded-full;
     background-size: 200% 200%;
     animation: gradientRotate 3s linear infinite;
   }
@@ -246,7 +240,7 @@
 
   /* Premium gradient text */
   .gradient-text {
-    @apply bg-gradient-to-r from-afrimart-orange via-afrimart-gold to-afrimart-green bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent;
   }
 
   .gradient-text-animated {
@@ -323,7 +317,6 @@
 }
 
 @layer utilities {
-  /* Hide scrollbar but allow scrolling */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -335,25 +328,13 @@
 
 /* Custom Keyframes */
 @keyframes appear {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes pageEnter {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes gradientRotate {
@@ -372,14 +353,8 @@
 }
 
 @keyframes confettiFall {
-  0% {
-    opacity: 1;
-    transform: translateY(0) rotate(0deg);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(100vh) rotate(720deg);
-  }
+  0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
 }
 
 @keyframes gradientText {
@@ -387,7 +362,6 @@
   50% { background-position: 100% center; }
 }
 
-/* Logo drawing animation */
 @keyframes logoStroke {
   0% { stroke-dashoffset: 1000; }
   100% { stroke-dashoffset: 0; }
@@ -399,7 +373,6 @@
   animation: logoStroke 2s ease-out forwards;
 }
 
-/* Typewriter animation */
 @keyframes typewriter {
   from { width: 0; }
   to { width: 100%; }
@@ -421,23 +394,15 @@
   animation: cursorBlink 1s infinite;
 }
 
-/* Particle explosion */
 @keyframes particleExplode {
-  0% {
-    transform: translate(0, 0) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(var(--tx), var(--ty)) scale(0);
-    opacity: 0;
-  }
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
 }
 
 .particle {
   animation: particleExplode 0.6s ease-out forwards;
 }
 
-/* Counter animation */
 @keyframes countUp {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -447,7 +412,6 @@
   animation: countUp 0.5s ease-out forwards;
 }
 
-/* Badge unlock animation */
 @keyframes badgeUnlock {
   0% { transform: scale(0) rotate(-180deg); opacity: 0; }
   50% { transform: scale(1.2) rotate(10deg); }
@@ -458,7 +422,6 @@
   animation: badgeUnlock 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-/* Glow pulse */
 @keyframes glowPulse {
   0%, 100% { box-shadow: 0 0 20px hsl(var(--primary) / 0.3); }
   50% { box-shadow: 0 0 40px hsl(var(--primary) / 0.6); }
@@ -468,7 +431,6 @@
   animation: glowPulse 2s ease-in-out infinite;
 }
 
-/* Shake animation for notifications */
 @keyframes bellShake {
   0%, 100% { transform: rotate(0); }
   10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); }
@@ -479,12 +441,12 @@
   animation: bellShake 0.5s ease-in-out;
 }
 
-/* African pattern overlay */
+/* Subtle geometric pattern overlay */
 .african-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23F97316' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
-/* Vibrant category backgrounds */
+/* Category backgrounds */
 .category-mode { background: linear-gradient(135deg, hsl(350 80% 60% / 0.1), hsl(320 80% 60% / 0.1)); }
 .category-electronics { background: linear-gradient(135deg, hsl(220 80% 60% / 0.1), hsl(260 80% 60% / 0.1)); }
 .category-food { background: linear-gradient(135deg, hsl(30 80% 60% / 0.1), hsl(50 80% 60% / 0.1)); }

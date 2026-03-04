@@ -13,7 +13,6 @@ interface PublicHeaderProps {
   onSearch?: (query: string) => void;
 }
 
-// Animated placeholder texts
 const placeholders = [
   "Rechercher des robes africaines...",
   "Trouver du beurre de karité...",
@@ -30,7 +29,6 @@ export function PublicHeader({ onSearch }: PublicHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
-  const [isTypingPlaceholder, setIsTypingPlaceholder] = useState(true);
   const [displayedPlaceholder, setDisplayedPlaceholder] = useState("");
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -47,17 +45,13 @@ export function PublicHeader({ onSearch }: PublicHeaderProps) {
           setDisplayedPlaceholder(currentPlaceholder.slice(0, charIndex));
           charIndex++;
         } else {
-          // Pause before deleting
-          setTimeout(() => {
-            isDeleting = true;
-          }, 2000);
+          setTimeout(() => { isDeleting = true; }, 2000);
         }
       } else {
         if (charIndex > 0) {
           charIndex--;
           setDisplayedPlaceholder(currentPlaceholder.slice(0, charIndex));
         } else {
-          // Move to next placeholder
           isDeleting = false;
           setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
         }
@@ -68,14 +62,8 @@ export function PublicHeader({ onSearch }: PublicHeaderProps) {
   }, [placeholderIndex]);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
+    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => setSession(session));
     return () => subscription.unsubscribe();
   }, []);
 
@@ -99,7 +87,7 @@ export function PublicHeader({ onSearch }: PublicHeaderProps) {
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
-            {/* Logo with animation */}
+            {/* Logo */}
             <Link to="/" className="flex items-center gap-2 shrink-0 group">
               <div className="relative">
                 <img 
@@ -107,14 +95,14 @@ export function PublicHeader({ onSearch }: PublicHeaderProps) {
                   alt="AfriMart" 
                   className="w-10 h-10 rounded-full object-cover transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
                 />
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-afrimart-orange to-afrimart-gold opacity-0 group-hover:opacity-30 transition-opacity blur-sm" />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-30 transition-opacity blur-sm" />
               </div>
               <span className="text-xl font-display font-bold text-foreground hidden sm:block group-hover:tracking-wider transition-all duration-300">
-                Afri<span className="text-gradient animate-gradient-x bg-[length:200%_auto]">Mart</span>
+                Afri<span className="gradient-text animate-gradient-x bg-[length:200%_auto]">Mart</span>
               </span>
             </Link>
 
-            {/* Search Bar - Desktop with suggestions */}
+            {/* Search Bar - Desktop */}
             <div ref={searchContainerRef} className="hidden md:block flex-1 max-w-xl relative">
               <form onSubmit={handleSearch}>
                 <div className="relative group">
@@ -123,73 +111,40 @@ export function PublicHeader({ onSearch }: PublicHeaderProps) {
                     type="search"
                     placeholder={searchQuery ? "" : displayedPlaceholder + "│"}
                     value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      setShowSuggestions(true);
-                    }}
+                    onChange={(e) => { setSearchQuery(e.target.value); setShowSuggestions(true); }}
                     onFocus={() => setShowSuggestions(true)}
                     className="pl-10 pr-10 h-12 bg-muted/50 border-2 border-transparent focus:border-primary/30 focus:bg-background transition-all duration-300 focus:shadow-lg focus:shadow-primary/10 rounded-xl"
                   />
-                  {/* Animated sparkle icon */}
                   {searchQuery && (
-                    <Sparkles className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-afrimart-gold animate-pulse-slow" />
+                    <Sparkles className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-secondary animate-pulse-slow" />
                   )}
                 </div>
               </form>
-              
-              {/* Search Suggestions Dropdown */}
-              <SearchSuggestions
-                query={searchQuery}
-                onSelect={handleSuggestionSelect}
-                isVisible={showSuggestions}
-                onClose={() => setShowSuggestions(false)}
-              />
+              <SearchSuggestions query={searchQuery} onSelect={handleSuggestionSelect} isVisible={showSuggestions} onClose={() => setShowSuggestions(false)} />
             </div>
 
             {/* Actions */}
             <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="hidden sm:flex hover:scale-105 active:scale-95 transition-transform duration-200"
-                onClick={() => navigate("/catalog")}
-              >
+              <Button variant="ghost" size="sm" className="hidden sm:flex hover:scale-105 active:scale-95 transition-transform duration-200" onClick={() => navigate("/catalog")}>
                 Explorer
               </Button>
-
               <CartDrawer />
-
               {session ? (
-                <Button
-                  onClick={() => navigate("/dashboard")}
-                  className="hidden sm:flex btn-client text-primary-foreground hover:animate-jelly"
-                  size="sm"
-                >
+                <Button onClick={() => navigate("/dashboard")} className="hidden sm:flex btn-client text-white hover:animate-jelly" size="sm">
                   Mon Dashboard
                 </Button>
               ) : (
-                <Button
-                  onClick={() => navigate("/auth")}
-                  className="hidden sm:flex hover:scale-105 active:scale-95 transition-transform"
-                  size="sm"
-                >
+                <Button onClick={() => navigate("/auth")} className="hidden sm:flex hover:scale-105 active:scale-95 transition-transform" size="sm">
                   Connexion
                 </Button>
               )}
-
-              {/* Mobile Menu Button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:hidden hover:rotate-180 transition-transform duration-300"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
+              <Button variant="ghost" size="icon" className="md:hidden hover:rotate-180 transition-transform duration-300" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>
             </div>
           </div>
 
-          {/* Mobile Search with suggestions */}
+          {/* Mobile Search */}
           <div className="md:hidden mt-3 relative">
             <form onSubmit={handleSearch}>
               <div className="relative">
@@ -198,56 +153,27 @@ export function PublicHeader({ onSearch }: PublicHeaderProps) {
                   type="search"
                   placeholder={searchQuery ? "" : displayedPlaceholder + "│"}
                   value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setShowSuggestions(true);
-                  }}
+                  onChange={(e) => { setSearchQuery(e.target.value); setShowSuggestions(true); }}
                   onFocus={() => setShowSuggestions(true)}
                   className="pl-10 pr-4 h-12 bg-muted/50 border-2 border-transparent focus:border-primary/30 rounded-xl"
                 />
               </div>
             </form>
-            
-            {/* Mobile Search Suggestions */}
-            <SearchSuggestions
-              query={searchQuery}
-              onSelect={handleSuggestionSelect}
-              isVisible={showSuggestions}
-              onClose={() => setShowSuggestions(false)}
-            />
+            <SearchSuggestions query={searchQuery} onSelect={handleSuggestionSelect} isVisible={showSuggestions} onClose={() => setShowSuggestions(false)} />
           </div>
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
             <nav className="md:hidden mt-4 pb-4 border-t border-border pt-4 space-y-2 animate-slide-down">
-              <Button
-                variant="ghost"
-                className="w-full justify-start hover:translate-x-2 transition-transform duration-200"
-                onClick={() => {
-                  navigate("/catalog");
-                  setMobileMenuOpen(false);
-                }}
-              >
+              <Button variant="ghost" className="w-full justify-start hover:translate-x-2 transition-transform duration-200" onClick={() => { navigate("/catalog"); setMobileMenuOpen(false); }}>
                 Explorer le catalogue
               </Button>
               {session ? (
-                <Button
-                  className="w-full btn-client text-primary-foreground"
-                  onClick={() => {
-                    navigate("/dashboard");
-                    setMobileMenuOpen(false);
-                  }}
-                >
+                <Button className="w-full btn-client text-white" onClick={() => { navigate("/dashboard"); setMobileMenuOpen(false); }}>
                   Mon Dashboard
                 </Button>
               ) : (
-                <Button
-                  className="w-full"
-                  onClick={() => {
-                    navigate("/auth");
-                    setMobileMenuOpen(false);
-                  }}
-                >
+                <Button className="w-full" onClick={() => { navigate("/auth"); setMobileMenuOpen(false); }}>
                   Connexion
                 </Button>
               )}

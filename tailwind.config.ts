@@ -72,6 +72,8 @@ export default {
           orange: "hsl(var(--afrimart-orange))",
           gold: "hsl(var(--afrimart-gold))",
           earth: "hsl(var(--afrimart-earth))",
+          indigo: "hsl(239 84% 67%)",
+          slate: "hsl(215 25% 27%)",
         },
       },
       borderRadius: {
