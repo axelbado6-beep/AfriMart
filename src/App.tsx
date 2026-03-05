@@ -20,6 +20,7 @@ import Orders from "./pages/Orders";
 import BusinessOrders from "./pages/BusinessOrders";
 import Checkout from "./pages/Checkout";
 import Settings from "./pages/Settings";
+import Subscription from "./pages/Subscription";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const AnimatedRoutes = () => {
         <Route path="/orders" element={<Orders />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/subscription" element={<Subscription />} />
         <Route
           path="/my-products" 
           element={
