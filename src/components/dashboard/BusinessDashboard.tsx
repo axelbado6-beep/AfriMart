@@ -19,7 +19,8 @@ import {
   Award,
   CheckCircle,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Crown
 } from "lucide-react";
 
 interface Profile {
@@ -350,6 +351,13 @@ const BusinessDashboard = ({ profile, businessProfile, userEmail }: BusinessDash
           color="muted" 
           onClick={() => navigate('/settings')}
           delay={4}
+        />
+        <QuickActionCard 
+          icon={Crown} 
+          label="Abonnement" 
+          color="primary" 
+          onClick={() => navigate('/subscription')}
+          delay={5}
         />
       </div>
 

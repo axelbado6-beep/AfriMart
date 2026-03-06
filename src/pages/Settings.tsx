@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import ProfileSettings from "@/components/settings/ProfileSettings";
 import BusinessSettings from "@/components/settings/BusinessSettings";
-import { Settings as SettingsIcon } from "lucide-react";
+import { Settings as SettingsIcon, Crown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Profile {
   id: string;
@@ -129,10 +130,29 @@ const Settings = () => {
 
         {/* Business Settings (only for business users) */}
         {profile?.user_type === "business" && (
-          <BusinessSettings 
-            businessProfile={businessProfile} 
-            onBusinessUpdate={handleProfileUpdate} 
-          />
+          <>
+            <BusinessSettings 
+              businessProfile={businessProfile} 
+              onBusinessUpdate={handleProfileUpdate} 
+            />
+
+            {/* Subscription Button */}
+            <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl border border-primary/20 p-6 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Crown className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold">Abonnement</h3>
+                  <p className="text-sm text-muted-foreground">Gérez votre plan et accédez à plus de fonctionnalités</p>
+                </div>
+              </div>
+              <Button onClick={() => navigate('/subscription')} className="gap-2">
+                <Crown className="w-4 h-4" />
+                Gérer
+              </Button>
+            </div>
+          </>
         )}
       </div>
     </DashboardLayout>
