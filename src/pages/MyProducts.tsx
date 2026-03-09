@@ -41,6 +41,44 @@ export default function MyProducts() {
     checkBusinessAndFetchProducts();
   }, []);
 
+  useEffect(() => {
+    if (searchParams.get("payment") === "success") {
+      toast.success("Paiement réussi ! Vous pouvez maintenant ajouter un produit.");
+    }
+    if (searchParams.get("payment") === "canceled") {
+      toast.error("Paiement annulé.");
+    }
+  }, [searchParams]);
+
+  const handleSupplementPayment = async () => {
+    setSupplementLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/auth");
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke("create-product-payment", {
+        body: { priceId: PRODUCT_SUPPLEMENT.priceId },
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+
+      if (error) throw error;
+      if (data.error) {
+        toast.error(data.error);
+        return;
+      }
+
+      window.open(data.url, "_blank");
+    } catch (err) {
+      console.error("Payment error:", err);
+      toast.error("Impossible de lancer le paiement");
+    } finally {
+      setSupplementLoading(false);
+    }
+  };
+
   const checkBusinessAndFetchProducts = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
