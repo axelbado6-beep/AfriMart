@@ -10,11 +10,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, ArrowLeft, Package, Crown, AlertTriangle } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Plus, ArrowLeft, Package, Crown, AlertTriangle, CreditCard, Loader2 } from "lucide-react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useSubscription } from "@/hooks/useSubscription";
-import { PLANS } from "@/lib/stripe-plans";
+import { PLANS, PRODUCT_SUPPLEMENT } from "@/lib/stripe-plans";
 
 interface Product {
   id: string;
