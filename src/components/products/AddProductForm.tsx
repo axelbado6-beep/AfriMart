@@ -59,6 +59,7 @@ const categories = [
 ];
 
 export function AddProductForm({ businessId, onSuccess }: AddProductFormProps) {
+  const { plan } = useSubscription();
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
