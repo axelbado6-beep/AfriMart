@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { supabase } from "@/integrations/supabase/client";
+import { useSubscription } from "@/hooks/useSubscription";
+import { PLANS } from "@/lib/stripe-plans";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -57,6 +59,7 @@ const categories = [
 ];
 
 export function AddProductForm({ businessId, onSuccess }: AddProductFormProps) {
+  const { plan } = useSubscription();
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -123,6 +126,23 @@ export function AddProductForm({ businessId, onSuccess }: AddProductFormProps) {
   const onSubmit = async (values: ProductFormValues) => {
     setSubmitting(true);
     try {
+      // Server-side product limit check
+      const productLimit = PLANS[plan].limits.products;
+      if (productLimit !== Infinity) {
+        const { count, error: countError } = await supabase
+          .from('products')
+          .select('*', { count: 'exact', head: true })
+          .eq('business_id', businessId);
+
+        if (countError) throw countError;
+
+        if ((count ?? 0) >= productLimit) {
+          toast.error(`Limite de ${productLimit} produits atteinte. Passez au plan supérieur.`);
+          setSubmitting(false);
+          return;
+        }
+      }
+
       const { error } = await supabase.from('products').insert({
         business_id: businessId,
         name: values.name,
