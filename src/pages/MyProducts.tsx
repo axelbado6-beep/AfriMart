@@ -31,6 +31,10 @@ export default function MyProducts() {
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
+  const { plan } = useSubscription();
+  const productLimit = PLANS[plan].limits.products;
+  const canAddProduct = products.length < productLimit;
+  const isAtLimit = !canAddProduct && productLimit !== Infinity;
 
   useEffect(() => {
     checkBusinessAndFetchProducts();
