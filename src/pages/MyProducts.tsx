@@ -10,11 +10,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, ArrowLeft, Package, Crown, AlertTriangle } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Plus, ArrowLeft, Package, Crown, AlertTriangle, CreditCard, Loader2 } from "lucide-react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useSubscription } from "@/hooks/useSubscription";
-import { PLANS } from "@/lib/stripe-plans";
+import { PLANS, PRODUCT_SUPPLEMENT } from "@/lib/stripe-plans";
 
 interface Product {
   id: string;
@@ -31,13 +31,53 @@ export default function MyProducts() {
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { plan } = useSubscription();
+  const [supplementLoading, setSupplementLoading] = useState(false);
   const productLimit = PLANS[plan].limits.products;
   const isAtLimit = products.length >= productLimit && productLimit !== Infinity;
 
   useEffect(() => {
     checkBusinessAndFetchProducts();
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get("payment") === "success") {
+      toast.success("Paiement réussi ! Vous pouvez maintenant ajouter un produit.");
+    }
+    if (searchParams.get("payment") === "canceled") {
+      toast.error("Paiement annulé.");
+    }
+  }, [searchParams]);
+
+  const handleSupplementPayment = async () => {
+    setSupplementLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/auth");
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke("create-product-payment", {
+        body: { priceId: PRODUCT_SUPPLEMENT.priceId },
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+
+      if (error) throw error;
+      if (data.error) {
+        toast.error(data.error);
+        return;
+      }
+
+      window.open(data.url, "_blank");
+    } catch (err) {
+      console.error("Payment error:", err);
+      toast.error("Impossible de lancer le paiement");
+    } finally {
+      setSupplementLoading(false);
+    }
+  };
 
   const checkBusinessAndFetchProducts = async () => {
     try {
@@ -149,11 +189,32 @@ export default function MyProducts() {
           </div>
 
           {isAtLimit && (
-            <div className="mt-3 flex items-center gap-3 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
-              <AlertTriangle className="h-4 w-4 text-destructive shrink-0" />
-              <p className="text-sm text-destructive">
-                Limite de {productLimit} produits atteinte ({PLANS[plan].name}). Passez au plan supérieur pour en ajouter plus.
-              </p>
+            <div className="mt-3 space-y-3">
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                <AlertTriangle className="h-4 w-4 text-destructive shrink-0" />
+                <p className="text-sm text-destructive">
+                  Limite de {productLimit} produits atteinte ({PLANS[plan].name}).
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button
+                  onClick={handleSupplementPayment}
+                  disabled={supplementLoading}
+                  variant="outline"
+                  className="gap-2 flex-1"
+                >
+                  {supplementLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
+                  Ajouter 1 produit pour {PRODUCT_SUPPLEMENT.price} XOF
+                </Button>
+                <Button
+                  onClick={() => navigate('/subscription')}
+                  variant="outline"
+                  className="gap-2 flex-1 border-primary/30 text-primary"
+                >
+                  <Crown className="h-4 w-4" />
+                  Passer au plan supérieur
+                </Button>
+              </div>
             </div>
           )}
         </div>

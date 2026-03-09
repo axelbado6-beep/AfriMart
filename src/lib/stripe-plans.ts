@@ -60,6 +60,12 @@ export const PLANS = {
   },
 } as const;
 
+export const PRODUCT_SUPPLEMENT = {
+  price: 500,
+  priceId: "price_1T92do3o1EuEkDxx9jLIMfsV",
+  productId: "prod_U7HCuwRRC7oztw",
+} as const;
+
 export type PlanKey = keyof typeof PLANS;
 
 export function getPlanByProductId(productId: string | null): PlanKey {
