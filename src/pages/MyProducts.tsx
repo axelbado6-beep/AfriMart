@@ -31,7 +31,9 @@ export default function MyProducts() {
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { plan } = useSubscription();
+  const [supplementLoading, setSupplementLoading] = useState(false);
   const productLimit = PLANS[plan].limits.products;
   const isAtLimit = products.length >= productLimit && productLimit !== Infinity;
 
