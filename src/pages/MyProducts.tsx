@@ -10,9 +10,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, ArrowLeft, Package } from "lucide-react";
+import { Plus, ArrowLeft, Package, Crown, AlertTriangle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useSubscription } from "@/hooks/useSubscription";
+import { PLANS } from "@/lib/stripe-plans";
 
 interface Product {
   id: string;
@@ -29,6 +31,9 @@ export default function MyProducts() {
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
+  const { plan } = useSubscription();
+  const productLimit = PLANS[plan].limits.products;
+  const isAtLimit = products.length >= productLimit && productLimit !== Infinity;
 
   useEffect(() => {
     checkBusinessAndFetchProducts();
@@ -43,7 +48,6 @@ export default function MyProducts() {
         return;
       }
 
-      // Get business profile
       const { data: businessProfile, error: businessError } = await supabase
         .from('business_profiles')
         .select('id')
@@ -108,34 +112,50 @@ export default function MyProducts() {
                   Mes Produits
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  {products.length} produit{products.length > 1 ? 's' : ''}
+                  {products.length}{productLimit !== Infinity ? `/${productLimit}` : ''} produit{products.length > 1 ? 's' : ''}
                 </p>
               </div>
             </div>
             
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  Ajouter
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2">
-                    <Package className="h-5 w-5 text-primary" />
-                    Nouveau Produit
-                  </DialogTitle>
-                </DialogHeader>
-                {businessId && (
-                  <AddProductForm 
-                    businessId={businessId} 
-                    onSuccess={handleProductAdded}
-                  />
-                )}
-              </DialogContent>
-            </Dialog>
+            {isAtLimit ? (
+              <Button onClick={() => navigate('/subscription')} variant="outline" className="gap-2 border-primary/30 text-primary">
+                <Crown className="h-4 w-4" />
+                Upgrader
+              </Button>
+            ) : (
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="gap-2">
+                    <Plus className="h-4 w-4" />
+                    Ajouter
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <Package className="h-5 w-5 text-primary" />
+                      Nouveau Produit
+                    </DialogTitle>
+                  </DialogHeader>
+                  {businessId && (
+                    <AddProductForm 
+                      businessId={businessId} 
+                      onSuccess={handleProductAdded}
+                    />
+                  )}
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
+
+          {isAtLimit && (
+            <div className="mt-3 flex items-center gap-3 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+              <AlertTriangle className="h-4 w-4 text-destructive shrink-0" />
+              <p className="text-sm text-destructive">
+                Limite de {productLimit} produits atteinte ({PLANS[plan].name}). Passez au plan supérieur pour en ajouter plus.
+              </p>
+            </div>
+          )}
         </div>
       </header>
 
