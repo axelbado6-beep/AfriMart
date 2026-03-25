@@ -340,6 +340,27 @@ export type Database = {
           },
         ]
       }
+      product_supplements: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: string
+          stripe_session_id: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: string
+          stripe_session_id: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          stripe_session_id?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           business_id: string

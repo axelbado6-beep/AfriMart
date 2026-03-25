@@ -34,7 +34,9 @@ export default function MyProducts() {
   const [searchParams] = useSearchParams();
   const { plan } = useSubscription();
   const [supplementLoading, setSupplementLoading] = useState(false);
-  const productLimit = PLANS[plan].limits.products;
+  const [supplementCount, setSupplementCount] = useState(0);
+  const basePlanLimit = PLANS[plan].limits.products;
+  const productLimit = basePlanLimit === Infinity ? Infinity : basePlanLimit + supplementCount;
   const isAtLimit = products.length >= productLimit && productLimit !== Infinity;
 
   useEffect(() => {
@@ -42,13 +44,32 @@ export default function MyProducts() {
   }, []);
 
   useEffect(() => {
-    if (searchParams.get("payment") === "success") {
-      toast.success("Paiement réussi ! Vous pouvez maintenant ajouter un produit.");
-    }
-    if (searchParams.get("payment") === "canceled") {
-      toast.error("Paiement annulé.");
-    }
-  }, [searchParams]);
+    const syncAndNotify = async () => {
+      if (searchParams.get("payment") === "success") {
+        // Sync supplement purchases from Stripe
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) {
+            await supabase.functions.invoke("verify-product-payment", {
+              headers: { Authorization: `Bearer ${session.access_token}` },
+            });
+            // Refresh supplements count
+            if (businessId) {
+              await fetchSupplementCount(businessId);
+              await fetchProducts(businessId);
+            }
+          }
+        } catch (err) {
+          console.error("Sync error:", err);
+        }
+        toast.success("Paiement réussi ! Vous pouvez maintenant ajouter un produit.");
+      }
+      if (searchParams.get("payment") === "canceled") {
+        toast.error("Paiement annulé.");
+      }
+    };
+    syncAndNotify();
+  }, [searchParams, businessId]);
 
   const handleSupplementPayment = async () => {
     setSupplementLoading(true);
@@ -79,6 +100,18 @@ export default function MyProducts() {
     }
   };
 
+  const fetchSupplementCount = async (busId: string) => {
+    try {
+      const { count, error } = await supabase
+        .from("product_supplements" as any)
+        .select("*", { count: "exact", head: true })
+        .eq("business_id", busId);
+      if (!error && count !== null) setSupplementCount(count);
+    } catch (err) {
+      console.error("Error fetching supplements:", err);
+    }
+  };
+
   const checkBusinessAndFetchProducts = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -103,7 +136,10 @@ export default function MyProducts() {
       }
 
       setBusinessId(businessProfile.id);
-      await fetchProducts(businessProfile.id);
+      await Promise.all([
+        fetchProducts(businessProfile.id),
+        fetchSupplementCount(businessProfile.id),
+      ]);
     } catch (error) {
       console.error('Error:', error);
       toast.error("Une erreur est survenue");

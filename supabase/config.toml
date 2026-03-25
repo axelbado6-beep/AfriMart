@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.create-product-payment]
 verify_jwt = false
+
+[functions.verify-product-payment]
+verify_jwt = false
