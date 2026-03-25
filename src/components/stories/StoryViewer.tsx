@@ -52,7 +52,7 @@ const StoryViewer = ({
   const [isPaused, setIsPaused] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const progressInterval = useRef<NodeJS.Timeout | null>(null);
+  const progressInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const currentStory = stories[currentIndex];
   const isVideo = currentStory?.media_url?.includes(".mp4") || 
