@@ -111,8 +111,8 @@ const Checkout = () => {
             quantity: item.quantity,
             total_price: item.price * item.quantity,
             currency: item.currency,
-            shipping_address: form.address,
-            notes: form.notes || null
+            shipping_address: trimmedAddress,
+            notes: trimmedNotes || null
           });
 
           if (error) throw error;
