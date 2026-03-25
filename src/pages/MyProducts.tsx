@@ -34,7 +34,9 @@ export default function MyProducts() {
   const [searchParams] = useSearchParams();
   const { plan } = useSubscription();
   const [supplementLoading, setSupplementLoading] = useState(false);
-  const productLimit = PLANS[plan].limits.products;
+  const [supplementCount, setSupplementCount] = useState(0);
+  const basePlanLimit = PLANS[plan].limits.products;
+  const productLimit = basePlanLimit === Infinity ? Infinity : basePlanLimit + supplementCount;
   const isAtLimit = products.length >= productLimit && productLimit !== Infinity;
 
   useEffect(() => {
