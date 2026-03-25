@@ -23,7 +23,7 @@ import StoryUploadModal from "@/components/media-editor/StoryUploadModal";
 import { cn } from "@/lib/utils";
 import type { Tables } from "@/integrations/supabase/types";
 
-type BusinessProfile = Tables<"business_profiles">;
+type BusinessProfile = Omit<Tables<"business_profiles">, "phone"> & { phone?: string | null };
 type Product = Tables<"products">;
 
 // Placeholder for stories with businesses
