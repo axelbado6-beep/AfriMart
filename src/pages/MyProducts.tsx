@@ -44,13 +44,32 @@ export default function MyProducts() {
   }, []);
 
   useEffect(() => {
-    if (searchParams.get("payment") === "success") {
-      toast.success("Paiement réussi ! Vous pouvez maintenant ajouter un produit.");
-    }
-    if (searchParams.get("payment") === "canceled") {
-      toast.error("Paiement annulé.");
-    }
-  }, [searchParams]);
+    const syncAndNotify = async () => {
+      if (searchParams.get("payment") === "success") {
+        // Sync supplement purchases from Stripe
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) {
+            await supabase.functions.invoke("verify-product-payment", {
+              headers: { Authorization: `Bearer ${session.access_token}` },
+            });
+            // Refresh supplements count
+            if (businessId) {
+              await fetchSupplementCount(businessId);
+              await fetchProducts(businessId);
+            }
+          }
+        } catch (err) {
+          console.error("Sync error:", err);
+        }
+        toast.success("Paiement réussi ! Vous pouvez maintenant ajouter un produit.");
+      }
+      if (searchParams.get("payment") === "canceled") {
+        toast.error("Paiement annulé.");
+      }
+    };
+    syncAndNotify();
+  }, [searchParams, businessId]);
 
   const handleSupplementPayment = async () => {
     setSupplementLoading(true);
