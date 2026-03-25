@@ -65,12 +65,27 @@ const Checkout = () => {
       return;
     }
 
-    if (!form.fullName || !form.phone || !form.address) {
+    const trimmedName = form.fullName.trim();
+    const trimmedPhone = form.phone.trim();
+    const trimmedAddress = form.address.trim();
+    const trimmedNotes = form.notes.trim();
+
+    if (!trimmedName || !trimmedPhone || !trimmedAddress) {
       toast({
         title: "Informations manquantes",
         description: "Veuillez remplir tous les champs obligatoires",
         variant: "destructive"
       });
+      return;
+    }
+
+    if (trimmedAddress.length > 500) {
+      toast({ title: "Erreur", description: "Adresse trop longue (max 500 caractères)", variant: "destructive" });
+      return;
+    }
+
+    if (trimmedNotes.length > 1000) {
+      toast({ title: "Erreur", description: "Notes trop longues (max 1000 caractères)", variant: "destructive" });
       return;
     }
 

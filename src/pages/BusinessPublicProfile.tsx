@@ -67,7 +67,7 @@ const BusinessPublicProfile = () => {
       
       const { data: businessData, error } = await supabase
         .from("business_profiles")
-        .select("*")
+        .select("id, user_id, business_name, logo_url, banner_url, category, description, location, country, is_verified, followers_count, opening_hours, created_at, updated_at")
         .eq("id", businessId)
         .single();
 
