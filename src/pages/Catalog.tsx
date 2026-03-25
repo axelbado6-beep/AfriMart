@@ -61,7 +61,7 @@ export default function Catalog() {
 
   // Idle detection for floating elements
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setTimeout>;
     const resetIdle = () => {
       setIdleTime(0);
       setShowIdleElements(false);
