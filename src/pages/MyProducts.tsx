@@ -100,6 +100,18 @@ export default function MyProducts() {
     }
   };
 
+  const fetchSupplementCount = async (busId: string) => {
+    try {
+      const { count, error } = await supabase
+        .from("product_supplements" as any)
+        .select("*", { count: "exact", head: true })
+        .eq("business_id", busId);
+      if (!error && count !== null) setSupplementCount(count);
+    } catch (err) {
+      console.error("Error fetching supplements:", err);
+    }
+  };
+
   const checkBusinessAndFetchProducts = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -124,7 +136,10 @@ export default function MyProducts() {
       }
 
       setBusinessId(businessProfile.id);
-      await fetchProducts(businessProfile.id);
+      await Promise.all([
+        fetchProducts(businessProfile.id),
+        fetchSupplementCount(businessProfile.id),
+      ]);
     } catch (error) {
       console.error('Error:', error);
       toast.error("Une erreur est survenue");
