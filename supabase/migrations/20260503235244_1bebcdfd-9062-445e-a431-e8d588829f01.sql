@@ -1,0 +1,1 @@
+GRANT SELECT (phone) ON public.business_profiles TO authenticated;
