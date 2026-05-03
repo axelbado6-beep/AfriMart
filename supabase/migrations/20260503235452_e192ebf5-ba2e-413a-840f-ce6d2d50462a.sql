@@ -1,0 +1,1 @@
+GRANT SELECT ON public.business_profiles TO anon, authenticated;
