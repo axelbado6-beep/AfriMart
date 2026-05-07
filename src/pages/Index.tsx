@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { PublicHeader } from "@/components/home/PublicHeader";
+import { DeliveryAddressBar } from "@/components/home/DeliveryAddressBar";
+import { CategoryGlovoGrid } from "@/components/home/CategoryGlovoGrid";
+import { BusinessRow } from "@/components/home/NearbyBusinesses";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
-import { CategoryNav } from "@/components/home/CategoryNav";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
-import { PopularBusinesses } from "@/components/home/PopularBusinesses";
-import { CategoryTabs } from "@/components/home/CategoryTabs";
 import { PublicFooter } from "@/components/home/PublicFooter";
 import HomeStoriesSection from "@/components/stories/HomeStoriesSection";
 import LoadingScreen from "@/components/layout/LoadingScreen";
@@ -24,19 +24,18 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Loading Screen */}
       <LoadingScreen onComplete={() => setIsLoading(false)} />
-
-      {/* Main Content with fade in after loading */}
       <div className={`transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
         <PublicHeader />
+        <DeliveryAddressBar />
         <main className="animate-fade-in">
-          <HeroCarousel />
+          <CategoryGlovoGrid />
+          <BusinessRow title="Près de chez vous" subtitle="Triés par distance" mode="nearby" />
           <HomeStoriesSection currentUserId={currentUserId} />
-          <CategoryNav />
+          <BusinessRow title="Populaires cette semaine" mode="popular" />
+          <HeroCarousel />
+          <BusinessRow title="Nouveau sur Afrimart" mode="newest" />
           <FeaturedProducts />
-          <PopularBusinesses />
-          <CategoryTabs />
         </main>
         <PublicFooter />
       </div>
