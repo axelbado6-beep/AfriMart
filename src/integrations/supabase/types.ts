@@ -93,12 +93,18 @@ export type Database = {
           category: string | null
           country: string | null
           created_at: string
+          delivery_fee_base: number
+          delivery_fee_per_km: number
+          delivery_mode: string
+          delivery_radius_km: number
           description: string | null
           followers_count: number | null
           id: string
           is_verified: boolean | null
+          latitude: number | null
           location: string | null
           logo_url: string | null
+          longitude: number | null
           opening_hours: Json | null
           phone: string | null
           updated_at: string
@@ -110,12 +116,18 @@ export type Database = {
           category?: string | null
           country?: string | null
           created_at?: string
+          delivery_fee_base?: number
+          delivery_fee_per_km?: number
+          delivery_mode?: string
+          delivery_radius_km?: number
           description?: string | null
           followers_count?: number | null
           id?: string
           is_verified?: boolean | null
+          latitude?: number | null
           location?: string | null
           logo_url?: string | null
+          longitude?: number | null
           opening_hours?: Json | null
           phone?: string | null
           updated_at?: string
@@ -127,12 +139,18 @@ export type Database = {
           category?: string | null
           country?: string | null
           created_at?: string
+          delivery_fee_base?: number
+          delivery_fee_per_km?: number
+          delivery_mode?: string
+          delivery_radius_km?: number
           description?: string | null
           followers_count?: number | null
           id?: string
           is_verified?: boolean | null
+          latitude?: number | null
           location?: string | null
           logo_url?: string | null
+          longitude?: number | null
           opening_hours?: Json | null
           phone?: string | null
           updated_at?: string
