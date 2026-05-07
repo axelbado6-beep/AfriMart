@@ -81,7 +81,7 @@ const BusinessPublicProfile = () => {
         return;
       }
 
-      setBusiness(businessData);
+      setBusiness(businessData as BusinessProfile);
 
       const { data: productsData } = await supabase
         .from("products")
