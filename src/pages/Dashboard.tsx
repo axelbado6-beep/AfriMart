@@ -84,13 +84,14 @@ const Dashboard = () => {
         if (profileData.user_type === "business") {
           const { data: businessData, error: businessError } = await supabase
             .from("business_profiles")
-            .select("*")
+            .select("id, user_id, business_name, logo_url, banner_url, category, description, opening_hours, location, country, is_verified, followers_count, created_at, updated_at, latitude, longitude, delivery_radius_km, delivery_fee_base, delivery_fee_per_km, delivery_mode")
             .eq("user_id", user.id)
             .maybeSingle();
           
           if (businessError) throw businessError;
           if (businessData) {
-            setBusinessProfile(businessData as BusinessProfile);
+            const { data: phone } = await supabase.rpc("get_business_phone", { _business_id: businessData.id });
+            setBusinessProfile({ ...businessData, phone: (phone as string | null) ?? null } as BusinessProfile);
           }
         }
       }
