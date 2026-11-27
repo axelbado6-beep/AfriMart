@@ -26,35 +26,40 @@ services à proximité, commande en quelques gestes et suivi de livraison en tem
 
 ## Démarrer en local
 
-Prérequis : Node.js et npm installés.
+Prérequis : **Node.js 18 ou plus** (20 ou 22 recommandés) et npm. Vérifier avec `node -v`.
 
 ```sh
-# 1. Cloner le dépôt
+# 1. Récupérer le code (ou dézipper l'archive téléchargée)
 git clone <URL_DU_DEPOT>
 
 # 2. Entrer dans le dossier
 cd <NOM_DU_PROJET>
 
-# 3. Installer les dépendances
-npm i
+# 3. Installer les dépendances (longue la première fois)
+npm install
 
 # 4. Lancer le serveur de développement
 npm run dev
 ```
 
-L'application est ensuite accessible sur `http://localhost:8080`.
+L'application est ensuite accessible sur `http://localhost:8080` (ouvrir ce lien dans le navigateur,
+ne pas double-cliquer `index.html` : rien ne s'afficherait).
+
+Aucune configuration n'est nécessaire : le projet Supabase est déjà câblé dans
+`src/integrations/supabase/client.ts`, donc la base, l'authentification et le stockage
+fonctionnent dès le premier lancement.
 
 ## Variables d'environnement
 
-Créer un fichier `.env` à la racine avec les valeurs de votre projet Supabase :
+Rien à créer pour lancer l'application : les identifiants Supabase (URL et clé publique) sont
+écrits dans `src/integrations/supabase/client.ts` et le fichier `.env` fourni n'est pas lu par
+l'application.
 
-```
-VITE_SUPABASE_URL=...
-VITE_SUPABASE_ANON_KEY=...
-```
+Pour brancher un autre projet Supabase, remplacer `SUPABASE_URL` et `SUPABASE_PUBLISHABLE_KEY`
+dans `src/integrations/supabase/client.ts`.
 
-Les clés Stripe et les secrets des edge functions se configurent côté serveur, jamais dans le
-code front-end.
+Les clés Stripe et les secrets des edge functions se configurent côté serveur (secrets Lovable /
+Supabase), jamais dans le code front-end.
 
 ## Déploiement
 
