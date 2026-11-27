@@ -1,0 +1,3 @@
+REVOKE SELECT ON public.business_profiles FROM anon, authenticated;
+GRANT SELECT (id, user_id, business_name, logo_url, banner_url, category, description, opening_hours, location, country, is_verified, followers_count, created_at, updated_at, latitude, longitude, delivery_radius_km, delivery_fee_base, delivery_fee_per_km, delivery_mode) ON public.business_profiles TO anon, authenticated;
+GRANT ALL ON public.business_profiles TO service_role;
