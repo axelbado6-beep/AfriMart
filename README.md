@@ -1,73 +1,65 @@
-# Welcome to your Lovable project
+# AfriMart
 
-## Project info
+Marketplace et plateforme de livraison pour l'Afrique de l'Ouest : boutiques, restaurants et
+services à proximité, commande en quelques gestes et suivi de livraison en temps réel.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Fonctionnalités
 
-## How can I edit this code?
+- **Accueil type Glovo** : adresse de livraison, catégories colorées, business triés par distance
+- **Catalogue et fiches business** : produits, avis, profil public partageable
+- **Commande et panier** : panier persistant, commande depuis la messagerie
+- **Paiement** : abonnements Stripe (Free / Pro / Enterprise) et supplément produit à 500 XOF
+- **Comptes** : connexion Google / Apple ou email, rôles Client et Entreprise
+- **Messagerie** : discussion client-vendeur avec partage de photos et vidéos
+- **Éditeur média** : stickers, effets et musique pour les publications
+- **Notifications** : centre de notifications avec sons et badge
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
+## Stack
 
 - Vite
 - TypeScript
 - React
 - shadcn-ui
 - Tailwind CSS
+- Supabase (Auth, Database, Storage, Edge Functions)
+- Stripe (abonnements et paiements uniques)
 
-## How can I deploy this project?
+## Démarrer en local
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Prérequis : Node.js et npm installés.
 
-## Can I connect a custom domain to my Lovable project?
+```sh
+# 1. Cloner le dépôt
+git clone <URL_DU_DEPOT>
 
-Yes, you can!
+# 2. Entrer dans le dossier
+cd <NOM_DU_PROJET>
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+# 3. Installer les dépendances
+npm i
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+# 4. Lancer le serveur de développement
+npm run dev
+```
+
+L'application est ensuite accessible sur `http://localhost:8080`.
+
+## Variables d'environnement
+
+Créer un fichier `.env` à la racine avec les valeurs de votre projet Supabase :
+
+```
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
+```
+
+Les clés Stripe et les secrets des edge functions se configurent côté serveur, jamais dans le
+code front-end.
+
+## Déploiement
+
+Le projet se déploie depuis l'éditeur : bouton **Publish** en haut à droite.
+
+## Domaine personnalisé
+
+Un domaine personnalisé se connecte dans **Project Settings → Domains**.
