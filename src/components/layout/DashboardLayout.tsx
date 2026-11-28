@@ -1,12 +1,12 @@
 import { ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import afrimartLogo from "@/assets/afrimart-logo.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { 
-  ShoppingBag, 
   LogOut, 
   Search,
   Home,
@@ -37,14 +37,12 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3" onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-afrimart-green to-afrimart-orange flex items-center justify-center">
-              <ShoppingBag className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-display font-bold">
+          <Link to="/" aria-label="AfriMart — Accueil" className="flex items-center gap-2 shrink-0">
+            <img src={afrimartLogo} alt="AfriMart" className="w-12 h-12 rounded-md object-contain" />
+            <span className="hidden sm:inline text-xl font-display font-bold">
               Afri<span className="text-gradient">Mart</span>
             </span>
-          </div>
+          </Link>
 
           <div className="flex items-center gap-2">
             <CartDrawer />

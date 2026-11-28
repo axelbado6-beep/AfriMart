@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useLocation, haversineKm } from "@/contexts/LocationContext";
 import { MapPin, BadgeCheck, Store } from "lucide-react";
@@ -25,7 +26,6 @@ type Props = {
 };
 
 export function BusinessRow({ title, subtitle, mode }: Props) {
-  const navigate = useNavigate();
   const { address } = useLocation();
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,12 +48,11 @@ export function BusinessRow({ title, subtitle, mode }: Props) {
       let list = (data ?? []) as Business[];
       if (mode === "nearby" && address) {
         list = list
-          .filter((b) => b.latitude != null && b.longitude != null)
-          .map((b) => ({
-            ...b,
-            _d: haversineKm(address, { lat: b.latitude!, lng: b.longitude! }),
-          }))
-          .sort((a: any, b: any) => a._d - b._d)
+          .flatMap((b) => {
+            if (b.latitude == null || b.longitude == null) return [];
+            return [{ ...b, _d: haversineKm(address, { lat: b.latitude, lng: b.longitude }) }];
+          })
+          .sort((a, b) => a._d - b._d)
           .slice(0, 12);
       } else {
         list = list.slice(0, 12);
@@ -81,20 +80,19 @@ export function BusinessRow({ title, subtitle, mode }: Props) {
           <div className="flex gap-3 pb-3">
             {loading
               ? Array.from({ length: 5 }).map((_, i) => (
-                  <Skeleton key={i} className="w-44 h-44 rounded-2xl shrink-0" />
+                  <Skeleton key={i} className="w-48 h-40 rounded-lg shrink-0" />
                 ))
               : businesses.map((b) => {
                   const distance =
-                    address && b.latitude && b.longitude
+                    address && b.latitude != null && b.longitude != null
                       ? haversineKm(address, { lat: b.latitude, lng: b.longitude })
                       : null;
                   return (
-                    <button
-                      key={b.id}
-                      onClick={() => navigate(`/business/${b.id}`)}
-                      className="group w-44 shrink-0 text-left rounded-2xl overflow-hidden bg-card border border-border hover:shadow-lg hover:-translate-y-1 transition-all"
-                    >
-                      <div className="relative h-24 bg-muted overflow-hidden">
+                    <Button asChild variant="ghost" key={b.id}
+                      className="group block h-auto p-0 w-48 shrink-0 text-left whitespace-normal rounded-lg overflow-hidden bg-card border border-border hover:bg-card hover:border-primary/40 motion-safe:hover:-translate-y-1 transition-all">
+                      <Link to={`/business/${b.id}`}>
+
+                      <div className="relative h-20 bg-muted overflow-hidden">
                         {b.banner_url ? (
                           <img
                             src={b.banner_url}
@@ -110,11 +108,11 @@ export function BusinessRow({ title, subtitle, mode }: Props) {
                           <img
                             src={b.logo_url}
                             alt=""
-                            className="absolute -bottom-4 left-3 w-10 h-10 rounded-full border-2 border-card object-cover bg-card"
+                            className="absolute bottom-2 left-2 w-9 h-9 rounded-md border-2 border-card object-cover bg-card"
                           />
                         )}
                       </div>
-                      <div className="p-3 pt-5">
+                      <div className="p-3">
                         <div className="flex items-center gap-1">
                           <p className="text-sm font-semibold text-foreground truncate flex-1">
                             {b.business_name}
@@ -132,7 +130,8 @@ export function BusinessRow({ title, subtitle, mode }: Props) {
                           </span>
                         </div>
                       </div>
-                    </button>
+                      </Link>
+                    </Button>
                   );
                 })}
           </div>

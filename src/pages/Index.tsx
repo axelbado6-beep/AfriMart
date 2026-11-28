@@ -29,11 +29,11 @@ const Index = () => {
         <PublicHeader />
         <DeliveryAddressBar />
         <main className="animate-fade-in">
+          <HeroCarousel />
           <CategoryGlovoGrid />
+          <BusinessRow title="Populaires cette semaine" mode="popular" />
           <BusinessRow title="Près de chez vous" subtitle="Triés par distance" mode="nearby" />
           <HomeStoriesSection currentUserId={currentUserId} />
-          <BusinessRow title="Populaires cette semaine" mode="popular" />
-          <HeroCarousel />
           <BusinessRow title="Nouveau sur Afrimart" mode="newest" />
           <FeaturedProducts />
         </main>

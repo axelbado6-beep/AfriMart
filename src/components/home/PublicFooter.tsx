@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Instagram, Twitter, MessageCircle, Phone, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { catalogHref } from "@/lib/catalog-categories";
 import afrimartLogo from "@/assets/afrimart-logo.jpg";
 
 export function PublicFooter() {
@@ -63,7 +65,7 @@ export function PublicFooter() {
             <h4 className="font-semibold mb-4">Catégories</h4>
             <ul className="space-y-2 text-sm text-primary-foreground/70">
               <li>
-                <Link to="/catalog?category=Mode" className="hover:text-primary-foreground transition-colors">
+                <Link to={catalogHref("Mode")} className="hover:text-primary-foreground transition-colors">
                   Mode
                 </Link>
               </li>
@@ -78,7 +80,7 @@ export function PublicFooter() {
                 </Link>
               </li>
               <li>
-                <Link to="/catalog?category=Beauté" className="hover:text-primary-foreground transition-colors">
+                <Link to={catalogHref("Beauté")} className="hover:text-primary-foreground transition-colors">
                   Beauté
                 </Link>
               </li>
@@ -87,7 +89,8 @@ export function PublicFooter() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-semibold mb-4">Contact</h4>
+            <h4 className="font-semibold mb-2">Contact du créateur</h4>
+            <p className="text-sm text-primary-foreground/70 mb-4">Axel Bado · Assistance et partenariats</p>
             <ul className="space-y-3 text-sm text-primary-foreground/70">
               <li className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 shrink-0" />
@@ -95,13 +98,17 @@ export function PublicFooter() {
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 shrink-0" />
-                <span>+225 07 00 00 00 00</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Mail className="h-4 w-4 shrink-0" />
-                <span>contact@afrimart.ci</span>
+                <a href="tel:+2250715649980" className="hover:underline">+225 07 15 64 99 80</a>
               </li>
             </ul>
+            <div className="flex flex-wrap gap-2 mt-4">
+              <Button asChild variant="outline" size="sm" className="bg-primary-foreground/10 text-primary-foreground border-primary-foreground/30 hover:bg-primary-foreground/20 hover:text-primary-foreground">
+                <a href="tel:+2250715649980"><Phone />Appeler</a>
+              </Button>
+              <Button asChild variant="outline" size="sm" className="bg-primary-foreground/10 text-primary-foreground border-primary-foreground/30 hover:bg-primary-foreground/20 hover:text-primary-foreground">
+                <a href="https://wa.me/2250715649980" target="_blank" rel="noopener noreferrer"><MessageCircle />WhatsApp</a>
+              </Button>
+            </div>
           </div>
         </div>
 

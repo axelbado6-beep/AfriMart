@@ -3,11 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, ArrowLeft, Store, MapPin, CheckCircle, ShoppingBag, Sparkles, X } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import type { Tables } from "@/integrations/supabase/types";
-import { categoryConfigs, getCategoryConfig, allCategories, type CategoryConfig } from "@/components/catalog/CategoryColors";
+import { getCategoryConfig } from "@/components/catalog/CategoryColors";
+import { CategorySelector } from "@/components/catalog/CategorySelector";
+import { matchesCatalogSection, normalizeCategory } from "@/lib/catalog-categories";
+import afrimartLogo from "@/assets/afrimart-logo.jpg";
 import { IdleFloatingElements } from "@/components/catalog/IdleFloatingElements";
 import { SearchSuggestions } from "@/components/home/SearchSuggestions";
 
@@ -20,10 +23,12 @@ interface Product {
   currency: string;
   images: string[];
   category: string | null;
+  description: string | null;
   business_id: string;
   business_profiles: {
     id: string;
     business_name: string;
+    category: string | null;
   } | null;
 }
 
@@ -37,14 +42,22 @@ const placeholders = [
 
 export default function Catalog() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [businesses, setBusinesses] = useState<BusinessProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
-  const [selectedCategory, setSelectedCategory] = useState("Tous");
+  const selectedCategory = normalizeCategory(searchParams.get("category"));
+  const requestedSub = searchParams.get("sub") || (["Restaurants", "Marché", "Boissons", "Pharmacie", "Cadeaux"].includes(searchParams.get("category") || "") ? searchParams.get("category") || "" : "");
+  const selectedSub = getCategoryConfig(selectedCategory).subcategories.includes(requestedSub) ? requestedSub : "";
+  const selectSection = (category: string, sub = "") => {
+    const params = new URLSearchParams(searchParams);
+    params.set("category", category);
+    if (sub) params.set("sub", sub); else params.delete("sub");
+    setSearchParams(params);
+  };
+  useEffect(() => { setSearchTerm(searchParams.get("search") || ""); }, [searchParams.get("search")]);
   const [activeTab, setActiveTab] = useState("products");
-  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [idleTime, setIdleTime] = useState(0);
   const [showIdleElements, setShowIdleElements] = useState(false);
@@ -94,7 +107,7 @@ export default function Catalog() {
 
   useEffect(() => {
     fetchData();
-  }, [selectedCategory]);
+  }, []);
 
   const fetchData = async () => {
     setLoading(true);
@@ -107,19 +120,17 @@ export default function Catalog() {
           price,
           currency,
           images,
+          description,
           category,
           business_id,
           business_profiles (
             id,
-            business_name
+            business_name,
+            category
           )
         `)
         .eq('is_available', true)
         .order('created_at', { ascending: false });
-
-      if (selectedCategory !== "Tous") {
-        productQuery = productQuery.eq('category', selectedCategory);
-      }
 
       const { data: productsData } = await productQuery;
       setProducts(productsData || []);
@@ -138,37 +149,31 @@ export default function Catalog() {
   };
 
   const filteredProducts = products.filter(product =>
+    matchesCatalogSection(product.category, `${product.name} ${product.description ?? ""} ${product.business_profiles?.category ?? ""}`, selectedCategory, selectedSub) &&
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredBusinesses = businesses.filter(business =>
-    business.business_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    business.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    business.location?.toLowerCase().includes(searchTerm.toLowerCase())
+    matchesCatalogSection(business.category, `${business.business_name} ${business.description ?? ""}`, selectedCategory, selectedSub) &&
+    `${business.business_name} ${business.category ?? ""} ${business.location ?? ""}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const currentCategoryConfig = getCategoryConfig(selectedCategory);
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Idle Floating Elements */}
       <IdleFloatingElements isActive={showIdleElements} category={selectedCategory} />
 
-      {/* Category-based Background Gradient */}
-      <div 
-        className={`absolute inset-0 opacity-30 transition-all duration-700 pointer-events-none bg-gradient-to-br ${currentCategoryConfig.gradient}`} 
-      />
-
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border animate-slide-down">
+      <header className="relative md:sticky md:top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border animate-slide-down">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4 mb-4">
             <Link to="/">
-              <Button variant="ghost" size="icon" className="hover-scale">
+              <Button variant="ghost" size="icon" aria-label="Retour à l’accueil" className="hover-scale">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <h1 className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
                 Explorer
                 <Sparkles className="w-5 h-5 text-afrimart-gold animate-pulse-slow" />
@@ -177,21 +182,22 @@ export default function Catalog() {
                 Découvrez les trésors de l'Afrique
               </p>
             </div>
+            <Link to="/" aria-label="AfriMart — Accueil"><img src={afrimartLogo} alt="AfriMart" className="w-12 h-12 rounded-md object-contain" /></Link>
           </div>
           
           {/* Enhanced Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-4">
-            <TabsList className="grid w-full grid-cols-2 h-14 bg-muted/50 p-1 rounded-2xl">
+            <TabsList className="grid w-full grid-cols-2 h-11 bg-muted/50 p-1 rounded-lg">
               <TabsTrigger 
                 value="products" 
-                className="flex items-center gap-2 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-afrimart-green data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-afrimart-green/30 transition-all duration-300 font-semibold"
+                className="flex items-center gap-2 rounded-md data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-semibold"
               >
                 <ShoppingBag className="w-4 h-4" />
                 Produits
               </TabsTrigger>
               <TabsTrigger 
                 value="businesses" 
-                className="flex items-center gap-2 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-afrimart-orange data-[state=active]:to-amber-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-afrimart-orange/30 transition-all duration-300 font-semibold"
+                className="flex items-center gap-2 rounded-md data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-semibold"
               >
                 <Store className="w-4 h-4" />
                 Entreprises
@@ -211,17 +217,17 @@ export default function Catalog() {
                   setShowSuggestions(true);
                 }}
                 onFocus={() => setShowSuggestions(true)}
-                className="pl-12 pr-12 h-14 text-lg bg-muted/50 border-2 border-transparent focus:border-primary/50 focus:bg-background rounded-2xl transition-all duration-300 focus:shadow-lg focus:shadow-primary/10"
+                className="pl-12 pr-12 h-11 text-base bg-muted/50 border-2 border-transparent focus:border-primary/50 focus:bg-background rounded-2xl transition-all duration-300 focus:shadow-lg focus:shadow-primary/10"
               />
               {searchTerm && (
                 <>
                   <Sparkles className="absolute right-12 top-1/2 -translate-y-1/2 h-5 w-5 text-afrimart-gold animate-pulse-slow" />
-                  <button 
+                  <Button variant="ghost" size="icon" aria-label="Effacer la recherche"
                     onClick={() => setSearchTerm("")}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-full transition-colors"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full"
                   >
                     <X className="h-4 w-4 text-muted-foreground" />
-                  </button>
+                  </Button>
                 </>
               )}
             </div>
@@ -239,78 +245,9 @@ export default function Catalog() {
           </div>
         </div>
 
-        {/* Enhanced Categories with Colors & Subcategories */}
-        {activeTab === "products" && (
-          <div className="container mx-auto px-4 pb-4">
-            <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
-              {allCategories.map((category, index) => {
-                const config = getCategoryConfig(category);
-                const isSelected = selectedCategory === category;
-                const isHovered = hoveredCategory === category;
-
-                return (
-                  <div 
-                    key={category}
-                    className="relative flex-shrink-0"
-                    onMouseEnter={() => setHoveredCategory(category)}
-                    onMouseLeave={() => setHoveredCategory(null)}
-                  >
-                    {/* Category Pill */}
-                    <button
-                      onClick={() => setSelectedCategory(category)}
-                      className={`
-                        flex items-center gap-2 px-5 py-3 rounded-2xl font-medium
-                        transition-all duration-300 whitespace-nowrap
-                        animate-scale-in
-                        ${isSelected 
-                          ? `bg-gradient-to-r ${config.gradient} text-white shadow-lg ${config.shadowClass}` 
-                          : `${config.bgClass} ${config.textClass} hover:scale-105 border ${config.borderClass}`
-                        }
-                      `}
-                      style={{ animationDelay: `${index * 0.05}s` }}
-                    >
-                      <config.icon className={`w-4 h-4 ${isSelected || isHovered ? "animate-wiggle" : ""}`} />
-                      <span>{category}</span>
-                      <span className="text-lg">{config.emoji}</span>
-                    </button>
-
-                    {/* Subcategories Dropdown on Hover */}
-                    {isHovered && config.subcategories.length > 0 && (
-                      <div className="absolute top-full left-0 mt-2 z-50 animate-fade-in">
-                        <div className={`bg-card border ${config.borderClass} rounded-2xl p-3 shadow-xl min-w-48`}>
-                          <p className={`text-xs font-semibold ${config.textClass} mb-2 px-2`}>
-                            Sous-catégories
-                          </p>
-                          <div className="grid grid-cols-2 gap-1">
-                            {config.subcategories.map((sub, i) => (
-                              <button
-                                key={sub}
-                                onClick={() => {
-                                  setSelectedCategory(category);
-                                  setSearchTerm(sub);
-                                  setHoveredCategory(null);
-                                }}
-                                className={`
-                                  text-left text-sm px-3 py-2 rounded-xl
-                                  ${config.bgClass} hover:${config.textClass}
-                                  transition-all duration-200 hover:scale-105 hover:shadow-md
-                                  animate-fade-in
-                                `}
-                                style={{ animationDelay: `${i * 0.03}s` }}
-                              >
-                                {sub}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+        <div className="container mx-auto px-4">
+          <CategorySelector category={selectedCategory} sub={selectedSub} onSelect={selectSection} />
+        </div>
       </header>
 
       {/* Content */}
@@ -352,12 +289,11 @@ export default function Catalog() {
                 </p>
               </div>
             ) : (
-              filteredBusinesses.map((business, index) => (
+              filteredBusinesses.map((business) => (
                 <BusinessCard 
                   key={business.id} 
                   business={business}
                   onClick={() => navigate(`/business/${business.id}`)}
-                  index={index}
                 />
               ))
             )}
@@ -368,87 +304,29 @@ export default function Catalog() {
   );
 }
 
-const BusinessCard = ({ 
-  business, 
-  onClick,
-  index = 0
-}: { 
-  business: BusinessProfile;
-  onClick: () => void;
-  index?: number;
-}) => {
-  const categoryConfig = getCategoryConfig(business.category || "Tous");
-
-  return (
-    <button
-      onClick={onClick}
-      className="group text-left bg-card rounded-2xl border border-border overflow-hidden hover:shadow-xl transition-all duration-500 hover:-translate-y-2 animate-scale-in"
-      style={{ animationDelay: `${index * 0.05}s` }}
-    >
-      {/* Banner with gradient overlay */}
-      <div 
-        className={`h-28 bg-gradient-to-br ${categoryConfig.gradient} relative overflow-hidden`}
-        style={business.banner_url ? {
-          backgroundImage: `url(${business.banner_url})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        } : {}}
-      >
-        {/* Decorative floating emoji */}
-        <div className="absolute top-3 right-3 text-2xl opacity-50 group-hover:opacity-100 group-hover:animate-bounce-soft transition-opacity">
-          {categoryConfig.emoji}
+const BusinessCard = ({ business, onClick }: { business: BusinessProfile; onClick: () => void }) => (
+  <Button variant="ghost" onClick={onClick}
+    className="group h-auto block w-full p-0 text-left whitespace-normal bg-card text-card-foreground rounded-lg border border-border overflow-hidden hover:bg-card hover:border-primary/40 motion-safe:hover:-translate-y-1 transition-all">
+    <div className="relative h-20 bg-muted overflow-hidden">
+      {business.banner_url && <img src={business.banner_url} alt="" className="w-full h-full object-cover" loading="lazy" />}
+    </div>
+    <div className="p-3">
+      <div className="flex items-center gap-3">
+        <div className="w-11 h-11 rounded-md bg-muted shrink-0 overflow-hidden">
+          {business.logo_url ? <img src={business.logo_url} alt="" className="w-full h-full object-cover" loading="lazy" /> : <Store className="w-full h-full p-2.5 text-muted-foreground" />}
         </div>
-      </div>
-
-      {/* Content */}
-      <div className="p-5 -mt-10 relative">
-        {/* Logo */}
-        <div className={`w-20 h-20 rounded-2xl bg-card border-4 border-background shadow-xl overflow-hidden mb-3 group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300`}>
-          {business.logo_url ? (
-            <img 
-              src={business.logo_url} 
-              alt={business.business_name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className={`w-full h-full ${categoryConfig.bgClass} flex items-center justify-center`}>
-              <Store className={`w-8 h-8 ${categoryConfig.textClass}`} />
-            </div>
-          )}
-        </div>
-
-        {/* Info */}
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0">
-            <div className="flex items-center gap-1.5">
-              <h3 className="font-display font-bold text-lg truncate group-hover:text-primary transition-colors">
-                {business.business_name}
-              </h3>
-              {business.is_verified && (
-                <CheckCircle className="w-5 h-5 text-afrimart-green fill-afrimart-green/20 flex-shrink-0" />
-              )}
-            </div>
-            {business.category && (
-              <span className={`inline-flex items-center gap-1 text-sm ${categoryConfig.textClass} ${categoryConfig.bgClass} px-2 py-0.5 rounded-full mt-1`}>
-                {business.category}
-              </span>
-            )}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            <h3 className="font-display font-semibold text-sm truncate group-hover:text-primary">{business.business_name}</h3>
+            {business.is_verified && <CheckCircle aria-label="Entreprise vérifiée" className="h-4 w-4 text-primary shrink-0" />}
           </div>
-        </div>
-
-        {/* Location & Stats */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-          {business.location && (
-            <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-              <MapPin className="w-4 h-4" />
-              {business.location}
-            </span>
-          )}
-          <span className="text-sm font-semibold text-afrimart-green">
-            {business.followers_count || 0} abonnés
-          </span>
+          <p className="text-xs text-muted-foreground truncate mt-1">{business.category}</p>
         </div>
       </div>
-    </button>
-  );
-};
+      <div className="flex items-center justify-between gap-2 mt-3 text-xs text-muted-foreground">
+        <span className="flex items-center gap-1 min-w-0"><MapPin className="h-3 w-3 shrink-0" /><span className="truncate">{business.location || "—"}</span></span>
+        <span className="shrink-0">{business.followers_count || 0} abonnés</span>
+      </div>
+    </div>
+  </Button>
+);

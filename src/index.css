@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -496,4 +494,26 @@
 }
 .press-effect:active {
   transform: scale(0.95);
+}
+
+/* Marketplace category accents stay semantic and adapt to both themes. */
+.category-tone-food { --category-tone: 18 80% 45%; }
+.category-tone-market { --category-tone: 153 65% 32%; }
+.category-tone-fashion { --category-tone: 339 68% 45%; }
+.category-tone-beauty { --category-tone: 280 48% 45%; }
+.category-tone-health { --category-tone: 0 65% 45%; }
+.category-tone-drinks { --category-tone: 38 85% 34%; }
+.category-tone-gifts { --category-tone: 326 60% 42%; }
+.category-tone-services { --category-tone: 217 65% 44%; }
+.category-tile {
+  background: hsl(var(--category-tone) / 0.09);
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--category-tone) / 0.16);
+}
+.category-tile:hover { background: hsl(var(--category-tone) / 0.16); color: hsl(var(--foreground)); }
+.category-tile-icon { background: hsl(var(--category-tone) / 0.14); color: hsl(var(--category-tone)); }
+.dark .category-tile-icon { color: hsl(var(--foreground)); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
